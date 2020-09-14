@@ -165,7 +165,7 @@ disqusShortname = ""
     # - send a dummy email yourself to confirm your account
     # - click the confirm link in the email from www.formspree.io
     # - you're done. Happy mailing!
-    # formEmail = "example@domain.com"
+    formEmail = "orianawei@yahoo.com"
 
     # Contact Section
     # You can add multiple emails, phone numbers, or addresses
@@ -174,9 +174,9 @@ disqusShortname = ""
     title = "Email"
     email = "owei.mam2021@london.edu"
 
-    [[params.contact.phone]]
-    title = "Phone"
-    phone = "(852)To be updated"
+#    [[params.contact.phone]]
+#    title = "Phone"
+#    phone = "(852)To be updated"
 
     [[params.contact.address]]
     title = "Address"
@@ -187,32 +187,32 @@ disqusShortname = ""
   # Footer section
   [params.footer]
     enable = true
-    copyright = "Company Name"
+    copyright = "Oriana Wei"
 
-    # Uses font awesome icons
-    [[params.footer.social]]
-      icon = "fa-twitter"
-      url= "https://www.twitter.com"
-      label = "Twitter"
+#    # Uses font awesome icons
+#    [[params.footer.social]]
+#      icon = "fa-twitter"
+#      url= "https://www.twitter.com"
+#      label = "Twitter"
 
-    [[params.footer.social]]
-      icon = "fa-facebook"
-      url= "https://www.facebook.com"
-      label = "Facebook"
+#    [[params.footer.social]]
+#      icon = "fa-facebook"
+#      url= "https://www.facebook.com"
+#      label = "Facebook"
 
     [[params.footer.social]]
       icon = "fa-instagram"
-      url= "https://www.instagram.com"
+      url= "https://www.instagram.com/ops_orianaway/"
       label = "Instagram"
     
     [[params.footer.social]]
       icon = "fa-github"
-      url= "https://www.github.com"
+      url= "https://github.com/oriana-wei"
       label = "GitHub"
 
     [[params.footer.social]]
       icon = "fa-linkedin"
-      url= "https://www.linkedin.com"
+      url= "www.linkedin.com/in/orianawei"
       label = "LinkedIn"
 
     [[params.footer.quicklinks]]
