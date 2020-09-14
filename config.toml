@@ -104,10 +104,10 @@ disqusShortname = ""
       url = "blogs/blog6"
 
     [[params.tiles.showcase]]
-      title = "Magna"
-      subtitle = "Lorem Etiam Nullam"
+      title = "Bike Sharing"
+      subtitle = "Excess rentals in TfL bike sharing"
       image = "pic03.jpg"
-      url = "blogs/magna"
+      url = "blogs/blog7"
 
     [[params.tiles.showcase]]
       title = "Ipsum"

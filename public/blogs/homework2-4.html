@@ -1,0 +1,4675 @@
+<script src="homework2-4_files/kePrint/kePrint.js"></script>
+<link href="homework2-4_files/lightable/lightable.css" rel="stylesheet" />
+
+
+<div id="challenge-2-excess-rentals-in-tfl-bike-sharing" class="section level1">
+<h1>Challenge 2: Excess rentals in TfL bike sharing</h1>
+<p>We got the latest TfL data on how many bikes were hired every single day:</p>
+<pre class="r"><code>url &lt;- &quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&quot;
+
+# Download TFL data to temporary file
+httr::GET(url, write_disk(bike.temp &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
+<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2020-08-26T09%3A19%3A21/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20200914%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20200914T173216Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=dedf5e684131a9e20c7c31db515b94747845d08aaaede8ecfc9f04df0f923aa8&amp;X-Amz-SignedHeaders=host]
+##   Date: 2020-09-14 17:32
+##   Status: 200
+##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+##   Size: 164 kB
+## &lt;ON DISK&gt;  /var/folders/sy/j0yjcqzn57n43076k22vm9040000gn/T//RtmpR9DqaU/file7e833ed3f19.xlsx</code></pre>
+<pre class="r"><code># Use read_excel to read it as dataframe
+bike0 &lt;- read_excel(bike.temp,
+                   sheet = &quot;Data&quot;,
+                   range = cell_cols(&quot;A:B&quot;))
+
+# change dates to get year, month, and week
+bike &lt;- bike0 %&gt;% 
+  clean_names() %&gt;% 
+  rename (bikes_hired = number_of_bicycle_hires) %&gt;% 
+  mutate (year = year(day),
+          month = lubridate::month(day, label = TRUE),
+          week = isoweek(day))</code></pre>
+<p>A facet grid plot of bikes hired by month and year will look like this:</p>
+<p><img src="/Users/oriana/Desktop/LBS_T1_Course/AM01 | Applied Statistics/my_website/images/tfl_distributions_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>When we look at May and Jun and compare 2020 with the previous years, we can clearly see the decrease in bike rentals for 2020. It is quite obvious that this is the effect of the COVID-19 situation and the subsequent lockdown which prevented people from going outdoors.</p>
+<p>The first graph that we replicated shows the monthly changes in the number of TfL bike rentals for the period 2015-2020.</p>
+<p>Original picture:</p>
+<p><img src="/Users/oriana/Desktop/LBS_T1_Course/AM01 | Applied Statistics/my_website/images/tfl_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>Our code for the replicated graph:</p>
+<pre class="r"><code># Calculate variables that feed into the graph
+
+actual_monthly_rentals &lt;- bike %&gt;% 
+  group_by(year, month) %&gt;% 
+  filter(year&gt;= 2015) %&gt;% 
+  summarise(actual_per_month = mean(bikes_hired)) 
+actual_monthly_rentals %&gt;% kbl() %&gt;% kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+year
+</th>
+<th style="text-align:left;">
+month
+</th>
+<th style="text-align:right;">
+actual_per_month
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:right;">
+18828
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+Feb
+</td>
+<td style="text-align:right;">
+19617
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+Mar
+</td>
+<td style="text-align:right;">
+22625
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+Apr
+</td>
+<td style="text-align:right;">
+27951
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+May
+</td>
+<td style="text-align:right;">
+29031
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+Jun
+</td>
+<td style="text-align:right;">
+34659
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+Jul
+</td>
+<td style="text-align:right;">
+36607
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+Aug
+</td>
+<td style="text-align:right;">
+33643
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+Sep
+</td>
+<td style="text-align:right;">
+30114
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+Oct
+</td>
+<td style="text-align:right;">
+28560
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+Nov
+</td>
+<td style="text-align:right;">
+22817
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:left;">
+Dec
+</td>
+<td style="text-align:right;">
+19618
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:right;">
+18914
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+Feb
+</td>
+<td style="text-align:right;">
+20608
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+Mar
+</td>
+<td style="text-align:right;">
+21435
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+Apr
+</td>
+<td style="text-align:right;">
+25444
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+May
+</td>
+<td style="text-align:right;">
+32699
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+Jun
+</td>
+<td style="text-align:right;">
+32108
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+Jul
+</td>
+<td style="text-align:right;">
+38336
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+Aug
+</td>
+<td style="text-align:right;">
+37368
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+Sep
+</td>
+<td style="text-align:right;">
+35101
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+Oct
+</td>
+<td style="text-align:right;">
+30488
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+Nov
+</td>
+<td style="text-align:right;">
+23700
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:left;">
+Dec
+</td>
+<td style="text-align:right;">
+21257
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:right;">
+20596
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+Feb
+</td>
+<td style="text-align:right;">
+22091
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+Mar
+</td>
+<td style="text-align:right;">
+26444
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+Apr
+</td>
+<td style="text-align:right;">
+30591
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+May
+</td>
+<td style="text-align:right;">
+32019
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+Jun
+</td>
+<td style="text-align:right;">
+36610
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+Jul
+</td>
+<td style="text-align:right;">
+36511
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+Aug
+</td>
+<td style="text-align:right;">
+32071
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+Sep
+</td>
+<td style="text-align:right;">
+31158
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+Oct
+</td>
+<td style="text-align:right;">
+31409
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+Nov
+</td>
+<td style="text-align:right;">
+26403
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:left;">
+Dec
+</td>
+<td style="text-align:right;">
+17229
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:right;">
+20836
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+Feb
+</td>
+<td style="text-align:right;">
+20587
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+Mar
+</td>
+<td style="text-align:right;">
+19514
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+Apr
+</td>
+<td style="text-align:right;">
+27491
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+May
+</td>
+<td style="text-align:right;">
+35893
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+Jun
+</td>
+<td style="text-align:right;">
+39388
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+Jul
+</td>
+<td style="text-align:right;">
+40423
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+Aug
+</td>
+<td style="text-align:right;">
+34135
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+Sep
+</td>
+<td style="text-align:right;">
+33607
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+Oct
+</td>
+<td style="text-align:right;">
+31558
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+Nov
+</td>
+<td style="text-align:right;">
+24601
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:left;">
+Dec
+</td>
+<td style="text-align:right;">
+18885
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:right;">
+22123
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+Feb
+</td>
+<td style="text-align:right;">
+24961
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+Mar
+</td>
+<td style="text-align:right;">
+25557
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+Apr
+</td>
+<td style="text-align:right;">
+29672
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+May
+</td>
+<td style="text-align:right;">
+32469
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+Jun
+</td>
+<td style="text-align:right;">
+33548
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+Jul
+</td>
+<td style="text-align:right;">
+37166
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+Aug
+</td>
+<td style="text-align:right;">
+33997
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+Sep
+</td>
+<td style="text-align:right;">
+32186
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+Oct
+</td>
+<td style="text-align:right;">
+27484
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+Nov
+</td>
+<td style="text-align:right;">
+24304
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:left;">
+Dec
+</td>
+<td style="text-align:right;">
+19099
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:right;">
+22888
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Feb
+</td>
+<td style="text-align:right;">
+22103
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Mar
+</td>
+<td style="text-align:right;">
+17850
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Apr
+</td>
+<td style="text-align:right;">
+19702
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+May
+</td>
+<td style="text-align:right;">
+36149
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Jun
+</td>
+<td style="text-align:right;">
+38601
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:left;">
+Jul
+</td>
+<td style="text-align:right;">
+37723
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>expected_monthly_rentals &lt;- bike %&gt;%
+  group_by(month) %&gt;% 
+  filter(year&gt;= 2015) %&gt;% 
+  summarise(expected_per_month = mean(bikes_hired))
+expected_monthly_rentals %&gt;% kbl() %&gt;% kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+month
+</th>
+<th style="text-align:right;">
+expected_per_month
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Jan
+</td>
+<td style="text-align:right;">
+20697
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Feb
+</td>
+<td style="text-align:right;">
+21658
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Mar
+</td>
+<td style="text-align:right;">
+22237
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Apr
+</td>
+<td style="text-align:right;">
+26808
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+May
+</td>
+<td style="text-align:right;">
+33043
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Jun
+</td>
+<td style="text-align:right;">
+35819
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Jul
+</td>
+<td style="text-align:right;">
+37794
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Aug
+</td>
+<td style="text-align:right;">
+34243
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Sep
+</td>
+<td style="text-align:right;">
+32433
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Oct
+</td>
+<td style="text-align:right;">
+29900
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Nov
+</td>
+<td style="text-align:right;">
+24365
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Dec
+</td>
+<td style="text-align:right;">
+19218
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>jointed_df &lt;- left_join(actual_monthly_rentals, expected_monthly_rentals, by = &quot;month&quot;, copy = TRUE) %&gt;% 
+   mutate(excess_monthly_rentals = actual_per_month - expected_per_month,
+         excess_rentals_pct_change = ((actual_per_month - expected_per_month) / expected_per_month),
+         up = ifelse(actual_per_month&gt;expected_per_month, excess_monthly_rentals, 0),
+         down = ifelse(actual_per_month&lt;expected_per_month, excess_monthly_rentals, 0),
+         up_percent = ifelse(actual_per_month&gt;expected_per_month, excess_rentals_pct_change, 0),
+         down_percent = ifelse(actual_per_month&lt;expected_per_month, excess_rentals_pct_change, 0)
+         )
+
+plot_1 &lt;- jointed_df %&gt;% 
+ggplot()+
+  geom_line(aes(x=month, y = actual_per_month, group=year))+
+  geom_line(aes(x=month, y = expected_per_month, group=year), color = &quot;blue&quot;, size = 1)+
+  facet_wrap(~year)+
+  theme_minimal()+
+  geom_ribbon(aes(x=month, ymin=0,ymax=down),fill=&quot;#7DCD85&quot;,alpha=0.4) +
+  geom_ribbon(aes(x=month, ymin=0,ymax=up),fill=&quot;#CB454A&quot;,alpha=0.4)+
+  scale_y_continuous(breaks = c(20000, 25000, 30000, 35000, 40000))+
+  coord_cartesian(ylim=c(20000,40000))+
+  theme(axis.title.x = element_blank())+
+  labs(
+    title = &quot;Monthly changes in TfL bike rentals&quot;,
+    subtitle = &quot;% change from monthly averages shown in blue and calculated between 2015-2019&quot;,
+    y=&quot;&quot;,
+    caption = &quot;Source: TfL, London Data Store&quot;
+  )+
+  NULL
+plot_1</code></pre>
+<p><img src="homework2-4_files/figure-html/unnamed-chunk-1-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>The second one looks at percentage changes from the expected level of weekly rentals. The two grey shaded rectangles correspond to the second (weeks 14-26) and fourth (weeks 40-52) quarter:</p>
+<p><img src="/Users/oriana/Desktop/LBS_T1_Course/AM01 | Applied Statistics/my_website/images/tfl_weekly.png" width="100%" style="display: block; margin: auto;" /></p>
+<p>For both of these graphs, you have to calculate the expected number of rentals per week or month between 2015-2019 and then, see how each week/month of 2020 compares to the expected rentals. Think of the calculation <code>excess_rentals = actual_rentals - expected_rentals</code>.</p>
+<p>Should you use the mean or the median to calculate your expected rentals? Why?</p>
+<p>In creating your plots, you may find these links useful:</p>
+<ul>
+<li><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="uri">https://ggplot2.tidyverse.org/reference/geom_ribbon.html</a></li>
+<li><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="uri">https://ggplot2.tidyverse.org/reference/geom_tile.html</a></li>
+<li><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="uri">https://ggplot2.tidyverse.org/reference/geom_rug.html</a></li>
+</ul>
+<pre class="r"><code># Build up the observed weekly bike rentals
+actual_per_week &lt;- bike %&gt;% 
+  group_by(year, week) %&gt;% 
+  filter(year&gt;= 2015) %&gt;% 
+  summarise(actual_bikes_hired = median(bikes_hired)) 
+actual_per_week %&gt;% kbl() %&gt;% kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+year
+</th>
+<th style="text-align:right;">
+week
+</th>
+<th style="text-align:right;">
+actual_bikes_hired
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+9491
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+20566
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+22894
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+22987
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+21421
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+21146
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+23429
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+17081
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+21708
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+24544
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+25840
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+24241
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+24161
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+22235
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+29525
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+30001
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+32332
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+29822
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+27029
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+32720
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+30267
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+29607
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+35048
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+33447
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+36220
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+37281
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+39280
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+41921
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+36989
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+32982
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+36932
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+39362
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+34137
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+34776
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+25191
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+29539
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+32968
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+30124
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:right;">
+30024
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+34591
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+28817
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+30815
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+43
+</td>
+<td style="text-align:right;">
+30127
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:right;">
+27534
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+24685
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+28623
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+23852
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+23667
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:right;">
+26038
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+23439
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+23972
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+17571
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2015
+</td>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+13938
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+20644
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+22266
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+22905
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+21816
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+23742
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+22995
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+21918
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+23714
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+20876
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+21938
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+25379
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+25612
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+24416
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+24132
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+24162
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+28512
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+27862
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+39104
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+30821
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+34655
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+35451
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+29162
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+35137
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+31372
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+29597
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+31701
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+37628
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+37045
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+42121
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+40999
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+39488
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+40052
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+39379
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+38191
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+34665
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+37982
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+39687
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+37658
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:right;">
+34840
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+35332
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+32552
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+30838
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+43
+</td>
+<td style="text-align:right;">
+33313
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:right;">
+31111
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+19258
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+26884
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+27692
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+26431
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:right;">
+28347
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+26747
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+23329
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+11660
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2016
+</td>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+7246
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+18973
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+20963
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+25125
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+23387
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+23181
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+22900
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+24330
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+26832
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+22914
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+28126
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+30857
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+27578
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+30887
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+35434
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+30343
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+29490
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+28450
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+29020
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+32618
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+26825
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+40021
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+37517
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+32997
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+41337
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+40025
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+38137
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+43547
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+38377
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+37967
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+32588
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+34430
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+33854
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+31947
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+33657
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+35246
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+28710
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+31628
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+32726
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:right;">
+30066
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+34779
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+34182
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+31069
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+43
+</td>
+<td style="text-align:right;">
+30604
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:right;">
+33312
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+28480
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+29355
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+28930
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+24324
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:right;">
+24810
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+20074
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+20945
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2017
+</td>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+8819
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+15350
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+24683
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+25799
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+26003
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+25331
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+23898
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+23169
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+23067
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+10619
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+22044
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+25318
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+24582
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+15800
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+23173
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+26473
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+40544
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+33426
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+35477
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+38386
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+37549
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+35108
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+37293
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+37841
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+38487
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+41134
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+43081
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+43143
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+41826
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+41828
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+42509
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+40908
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+33214
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+36510
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+34492
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+35048
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+35451
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+35332
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+35317
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:right;">
+35817
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+36930
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+35875
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+32588
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+43
+</td>
+<td style="text-align:right;">
+34430
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:right;">
+29409
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+27656
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+28581
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+18246
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+22846
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:right;">
+18608
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+25997
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+20180
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2018
+</td>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+12922
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+15214
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+26022
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+25525
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+24198
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+23487
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+18254
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+28786
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+28971
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+28255
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+24884
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+23699
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+27824
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+31955
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+25493
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+26527
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+36574
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+34494
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+32563
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+28404
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+37537
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+37280
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+34443
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+31948
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+26617
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+36858
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+38617
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+42466
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+41305
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+34240
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+39323
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+38299
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+34041
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+29360
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+35995
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+36576
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+33933
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+35787
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+37699
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:right;">
+28976
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+27787
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+28418
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+29675
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+43
+</td>
+<td style="text-align:right;">
+24215
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:right;">
+30208
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+29198
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+27391
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+27064
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+26030
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:right;">
+27306
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+23189
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+19747
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2019
+</td>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+11718
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+15695
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+26621
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+23018
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+27721
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+26373
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+28264
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+25451
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+24292
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+20355
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+23387
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+25231
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+17397
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+10970
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+9896
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+17448
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+18010
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+23358
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+14657
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+23527
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+20434
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+36798
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+45645
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+28908
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+28841
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+37745
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+48259
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+32523
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+33682
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+35307
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+40093
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2020
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+41123
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># Calculate the expected weekly rentals for each year
+expected_per_week &lt;- bike %&gt;% 
+  group_by(week) %&gt;% 
+  filter(year&gt;= 2015) %&gt;%  
+  summarise(expected_bikes_hired = median(bikes_hired)) 
+expected_per_week %&gt;% kbl() %&gt;% kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+week
+</th>
+<th style="text-align:right;">
+expected_bikes_hired
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+15695
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+22549
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+23306
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+23332
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+23356
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+21929
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+23974
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+24294
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+21211
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+23824
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+25434
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+25003
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+24288
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+23533
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+26639
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+31174
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+28475
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+30968
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+30434
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+33800
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+35791
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+35690
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+35092
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+33642
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+38072
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+38616
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+39955
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+38887
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+38876
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+39122
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+38580
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+32
+</td>
+<td style="text-align:right;">
+37864
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+32209
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+34548
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+34665
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+36
+</td>
+<td style="text-align:right;">
+31798
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+33403
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+33855
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:right;">
+32427
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+33923
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+32760
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+30815
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+43
+</td>
+<td style="text-align:right;">
+30329
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+44
+</td>
+<td style="text-align:right;">
+30208
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+26382
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+27692
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+25881
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+25714
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+49
+</td>
+<td style="text-align:right;">
+25801
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+23439
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+21659
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+11637
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+12379
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># Build-up the data frame to plot
+jointed &lt;- left_join(actual_per_week, expected_per_week, by = &quot;week&quot;, copy = TRUE)%&gt;% 
+  mutate(excess_rentals = actual_bikes_hired - expected_bikes_hired,
+         excess_rentals_pct_change = ((actual_bikes_hired - expected_bikes_hired) / expected_bikes_hired),
+         up = ifelse(actual_bikes_hired&gt;expected_bikes_hired, excess_rentals, 0),
+         down = ifelse(actual_bikes_hired&lt;expected_bikes_hired, excess_rentals, 0),
+         up_percent = ifelse(actual_bikes_hired&gt;expected_bikes_hired, excess_rentals_pct_change, 0),
+         down_percent = ifelse(actual_bikes_hired&lt;expected_bikes_hired, excess_rentals_pct_change, 0)
+         )
+
+# Plot the %changes
+plot_2 &lt;- jointed %&gt;% 
+ggplot(aes(x=week, y = excess_rentals_pct_change, group=year))+
+ # geom_rect(data=q2_q4, inherit.aes=F,
+           # aes(xmin=from, xmax=to, ymin=-Inf, ymax=+Inf), fill=&#39;lightgray&#39;, alpha=0.4) +
+  geom_line()+
+  facet_wrap(~year, nrow = 2)+
+  theme_minimal()+
+  geom_ribbon(aes(ymin=0,ymax=up_percent),fill=&quot;#7DCD85&quot;,alpha=0.4)  +
+  geom_ribbon(aes(ymin=0,ymax=down_percent),fill=&quot;#CB454A&quot;,alpha=0.4)+
+  geom_rug(aes(colour=ifelse(actual_bikes_hired&gt;=expected_bikes_hired,&quot;&gt;=0&quot;,&quot;&lt;0&quot;)),sides=&quot;b&quot;)+
+  scale_colour_manual(values=c(&quot;#CB454A&quot;,&quot;#7DCD85&quot;),name=&quot;Actual vs Expected &quot;, guide=FALSE)+
+  scale_y_continuous(labels = scales::percent)+
+  scale_x_continuous(limits = c(0, 53), breaks = c(13,26,39,53))+
+  labs(
+    title = &quot;Weekly changes in TfL bike rentals&quot;,
+    subtitle = &quot;% change from weekly averages \ncalculated between 2015-2019&quot;,
+    y=&quot;&quot;,
+    caption = &quot;Source: TfL, London Data Store&quot;
+  )+
+  NULL
+plot_2</code></pre>
+<p><img src="homework2-4_files/figure-html/unnamed-chunk-2-1.png" width="1056" style="display: block; margin: auto;" /></p>
+</div>

@@ -22,6 +22,16 @@
     </item>
     
     <item>
+      <title>Bike Sharing</title>
+      <link>/blogs/blog7/</link>
+      <pubDate>Sun, 06 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/blogs/blog7/</guid>
+      <description>We got the latest TfL data on how many bikes were hired every single day:
+url &amp;lt;- &amp;quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&amp;quot; # Download TFL data to temporary file httr::GET(url, write_disk(bike.temp &amp;lt;- tempfile(fileext = &amp;quot;.xlsx&amp;quot;))) ## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2020-08-26T09%3A19%3A21/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20200914%2Feu-west-1%2Fs3%2Faws4_request&amp;amp;X-Amz-Date=20200914T173216Z&amp;amp;X-Amz-Expires=300&amp;amp;X-Amz-Signature=dedf5e684131a9e20c7c31db515b94747845d08aaaede8ecfc9f04df0f923aa8&amp;amp;X-Amz-SignedHeaders=host] ## Date: 2020-09-14 17:32 ## Status: 200 ## Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet ## Size: 164 kB ## &amp;lt;ON DISK&amp;gt; /var/folders/sy/j0yjcqzn57n43076k22vm9040000gn/T//RtmpmCIrA6/file7eb97e9e4f23.xlsx # Use read_excel to read it as dataframe bike0 &amp;lt;- read_excel(bike.temp, sheet = &amp;quot;Data&amp;quot;, range = cell_cols(&amp;quot;A:B&amp;quot;)) # change dates to get year, month, and week bike &amp;lt;- bike0 %&amp;gt;% clean_names() %&amp;gt;% rename (bikes_hired = number_of_bicycle_hires) %&amp;gt;% mutate (year = year(day), month = lubridate::month(day, label = TRUE), week = isoweek(day)) When we look at May and Jun and compare 2020 with the previous years, we can clearly see the decrease in bike rentals for 2020.</description>
+    </item>
+    
+    <item>
       <title>COVID-19</title>
       <link>/blogs/blog6/</link>
       <pubDate>Sat, 05 Sep 2020 00:00:00 +0000</pubDate>
