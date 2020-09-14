@@ -116,10 +116,10 @@ disqusShortname = ""
       url = "blogs/blog8"
 
     [[params.tiles.showcase]]
-      title = "Consequat"
-      subtitle = "Ipsum Dolor Sit Amet"
+      title = "Trump's Approval Margins"
+      subtitle = "Vote for Trump?"
       image = "pic05.jpg"
-      url = "blogs/ipsum"
+      url = "blogs/blog9"
 
     [[params.tiles.showcase]]
       title = "Etiam"

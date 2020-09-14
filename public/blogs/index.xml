@@ -12,6 +12,16 @@
     
     
     <item>
+      <title>Trump&#39;s Approval Margins</title>
+      <link>/blogs/blog9/</link>
+      <pubDate>Wed, 09 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/blogs/blog9/</guid>
+      <description>Trump’s Approval Margins As we saw in class, fivethirtyeight.com has detailed data on all polls that track the president’s approval
+# Import approval polls data #approval_polllist &amp;lt;- read_csv(here::here(&amp;#39;data&amp;#39;, &amp;#39;approval_polllist.csv&amp;#39;)) # or directly off fivethirtyeight website approval_polllist &amp;lt;- read_csv(&amp;#39;https://projects.fivethirtyeight.com/trump-approval-data/approval_polllist.csv&amp;#39;) glimpse(approval_polllist) ## Rows: 15,475 ## Columns: 22 ## $ president &amp;lt;chr&amp;gt; &amp;quot;Donald Trump&amp;quot;, &amp;quot;Donald Trump&amp;quot;, &amp;quot;Donald Trump&amp;quot;, &amp;quot;… ## $ subgroup &amp;lt;chr&amp;gt; &amp;quot;All polls&amp;quot;, &amp;quot;All polls&amp;quot;, &amp;quot;All polls&amp;quot;, &amp;quot;All polls… ## $ modeldate &amp;lt;chr&amp;gt; &amp;quot;9/14/2020&amp;quot;, &amp;quot;9/14/2020&amp;quot;, &amp;quot;9/14/2020&amp;quot;, &amp;quot;9/14/2020… ## $ startdate &amp;lt;chr&amp;gt; &amp;quot;1/20/2017&amp;quot;, &amp;quot;1/20/2017&amp;quot;, &amp;quot;1/20/2017&amp;quot;, &amp;quot;1/21/2017… ## $ enddate &amp;lt;chr&amp;gt; &amp;quot;1/22/2017&amp;quot;, &amp;quot;1/22/2017&amp;quot;, &amp;quot;1/24/2017&amp;quot;, &amp;quot;1/23/2017… ## $ pollster &amp;lt;chr&amp;gt; &amp;quot;Morning Consult&amp;quot;, &amp;quot;Gallup&amp;quot;, &amp;quot;Ipsos&amp;quot;, &amp;quot;Gallup&amp;quot;, &amp;quot;… ## $ grade &amp;lt;chr&amp;gt; &amp;quot;B/C&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;B-&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;B&amp;quot;, &amp;quot;B+&amp;quot;, &amp;quot;C+&amp;quot;, &amp;quot;B-&amp;quot;, &amp;quot;B-… ## $ samplesize &amp;lt;dbl&amp;gt; 1992, 1500, 1632, 1500, 1500, 1190, 1500, 1651, 1… ## $ population &amp;lt;chr&amp;gt; &amp;quot;rv&amp;quot;, &amp;quot;a&amp;quot;, &amp;quot;a&amp;quot;, &amp;quot;a&amp;quot;, &amp;quot;a&amp;quot;, &amp;quot;rv&amp;quot;, &amp;quot;lv&amp;quot;, &amp;quot;a&amp;quot;, &amp;quot;a&amp;quot;, &amp;quot;… ## $ weight &amp;lt;dbl&amp;gt; 0.</description>
+    </item>
+    
+    <item>
       <title>Beer Consuming</title>
       <link>/blogs/blog8/</link>
       <pubDate>Mon, 07 Sep 2020 00:00:00 +0000</pubDate>
