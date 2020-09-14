@@ -91,11 +91,11 @@ disqusShortname = ""
     enable = true
     # Display your showcases here.
     
-#    [[params.tiles.showcase]]
-#      title = "Mask Acceptance"
-#      subtitle = "Is mask acceptance high in the US? NYT Survey analysis"
-#      image = "pic07.jpg"
-#      url = "blogs/blog5"
+    [[params.tiles.showcase]]
+      title = "Mask Acceptance"
+      subtitle = "Is mask acceptance high in the US? NYT Survey analysis"
+      image = "pic07.jpg"
+      url = "blogs/blog5"
 
     [[params.tiles.showcase]]
       title = "COVID-19"
@@ -110,10 +110,10 @@ disqusShortname = ""
       url = "blogs/blog7"
 
     [[params.tiles.showcase]]
-      title = "Ipsum"
-      subtitle = "Nisl Sed Aliquam"
+      title = "Beer Consuming"
+      subtitle = "Where Do People Drink The Most Beer, Wine And Spirits?"
       image = "pic04.jpg"
-      url = "blogs/ipsum"
+      url = "blogs/blog8"
 
     [[params.tiles.showcase]]
       title = "Consequat"
