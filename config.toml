@@ -212,7 +212,7 @@ disqusShortname = ""
 
     [[params.footer.social]]
       icon = "fa-linkedin"
-      url= "www.linkedin.com/in/orianawei"
+      url= "https://www.linkedin.com/in/orianawei"
       label = "LinkedIn"
 
     [[params.footer.quicklinks]]
