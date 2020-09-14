@@ -94,8 +94,8 @@ disqusShortname = ""
     [[params.tiles.showcase]]
       title = "Trump's Approval Margins"
       subtitle = "How do Trump's approval margins evolve?"
-      image = "pic11.jpg"
-      url = "blogs/blog1"
+      image = "pic07.jpg"
+      url = "blogs/blog6"
 
     [[params.tiles.showcase]]
       title = "Tempus"

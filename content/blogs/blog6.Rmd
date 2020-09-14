@@ -5,7 +5,7 @@ categories:
 date: "2020-09-04"
 description: How do Trump's approval margins evolve?
 draft: false
-image: pic11.jpg
+image: pic07.jpg
 keywords: ""
 slug: blog1
 title: Trump's Approval Margins
