@@ -1,0 +1,154 @@
+---
+title: 'Session 4: Homework 2'
+author: "Group 4"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: flatly
+    highlight: zenburn
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+    code_folding: show
+---
+
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+
+```{r load-libraries, include=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(httr)
+library(readxl)
+library(vroom)
+library(kableExtra)
+```
+
+
+
+# Trump's Approval Margins
+
+As we saw in class, fivethirtyeight.com has detailed data on [all polls that track the president's approval ](https://projects.fivethirtyeight.com/trump-approval-ratings)
+
+```{r, cache=TRUE}
+
+# Import approval polls data
+# approval_polllist <- read_csv(here::here('data', 'approval_polllist.csv'))
+
+# or directly off fivethirtyeight website
+approval_polllist <- read_csv('https://projects.fivethirtyeight.com/trump-approval-data/approval_polllist.csv') 
+
+glimpse(approval_polllist) 
+
+```
+
+```{r}
+
+# Use `lubridate` to fix dates, as they are given as characters.
+approval_polllist$new_modeldate <- as.Date(approval_polllist$modeldate,
+                         format = "%m/%d/%Y")
+approval_polllist$new_startdate <- as.Date(approval_polllist$startdate,
+                         format = "%m/%d/%Y")
+approval_polllist$new_enddate <- as.Date(approval_polllist$enddate,
+                         format = "%m/%d/%Y")
+approval_polllist$new_createddate <- as.Date(approval_polllist$createddate,
+                         format = "%m/%d/%Y")
+approval_polllist$new_timestamp <- as.POSIXct(approval_polllist$timestamp,
+                          format = "%H:%M:%S %d %b %Y")
+approval_polllist %>% kbl() %>% kable_styling()
+
+```
+
+## Create a plot
+
+What I would like you to do is to calculate the average net approval rate (approve- disapprove) for each week since he got into office. I want you plot the net approval, along with its 95% confidence interval. There are various dates given for each poll, please use `enddate`, i.e., the date the poll ended.
+```{r}
+
+#add week number of each enddate
+week_list <- approval_polllist %>%
+mutate(week = lubridate::week(ymd(approval_polllist$new_enddate)))
+week_list %>% kbl() %>% kable_styling()
+
+#add a column for year+week
+approval_year <- week_list %>% 
+  mutate(year=year(new_enddate),
+         year_week=year(new_enddate)* 100 + week)
+approval_year %>% kbl() %>% kable_styling()
+
+#calculate the average net approval rate and CI of each week 
+week_mean <- approval_year %>% 
+  group_by(year_week) %>% 
+  mutate(approval_mean=mean(approve-disapprove), 
+         sd_approval=sd(approve-disapprove),
+         count=n(),
+         t_critical=qt(0.975, count-1),
+         se_approval=sd(approve-disapprove)/sqrt(count),
+            margin_of_error=t_critical*se_approval,
+            approval_low=approval_mean-margin_of_error,
+            approval_high=approval_mean+margin_of_error)
+week_mean %>% kbl() %>% kable_styling()
+
+#finalize the data set showing on the plot
+final_plot <- week_mean %>%
+  select(year,
+         week,
+         approval_mean,
+         approval_high,
+         approval_low )
+
+final_plot %>% kbl() %>% kable_styling()
+```
+
+```{r, fig.width=12, fig.height= 6}
+
+#plotting
+library(reshape2)
+#show_plot <- melt(final_plot,id.vars = "week")
+
+ggplot(final_plot, aes(x = week, y = approval_mean, color = as.factor(year))) +
+  geom_point(size = 1) +
+  geom_line()+ 
+  geom_ribbon(aes(ymin = approval_low, ymax = approval_high), alpha = 0.08)+
+  facet_wrap(~year)+
+  labs(title = "Estimating Net Approval (approve-disapprove) for Donald Trump", 
+       subtitle = "Weekly average of all polls", 
+       x = "Week of the year", 
+       y = "Average Net Approval(%)") +
+#change xy ratio and extend x
+    coord_fixed(ratio=1/2) +
+    scale_y_continuous(breaks=seq(-20, 7.5, 2.5)) +
+    scale_x_continuous(breaks=seq(0, 52, 13)) +
+    theme_bw() +
+  theme(legend.position = "none") +
+    geom_hline(aes(yintercept = 0), colour = "orange") +
+  #scale_x_continous(breaks=seq(-20,7.5,2.5)) +
+  #scale_color_manual( values = c("blue","yellow","red","green"))+
+  NULL
+
+```
+
+
+
+

@@ -1,0 +1,175 @@
+---
+title: 'Session 4: Homework 2'
+author: "Group 4"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: flatly
+    highlight: zenburn
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+    code_folding: show
+---
+
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+
+```{r load-libraries, include=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(httr)
+library(readxl)
+library(vroom)
+library(kableExtra)
+```
+
+
+
+
+
+
+# Challenge 1: CDC COVID-19 Public Use Data
+
+Let us use [CDC Covid-19 Case Surveillance Data](https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf) to plot some graphs.
+
+```{r, cache=TRUE}
+
+# URL link to CDC to download data
+url <- "https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD"
+
+covid_data <- vroom(url)%>%
+  clean_names()
+
+```
+
+We'll replicate the following two plots:
+
+```{r covid_challenge, echo=FALSE, out.width="100%"}
+
+knitr::include_graphics(here::here("images", "covid_death_rate_comorbidities.png"), error = FALSE)
+knitr::include_graphics(here::here("images", "covid_death_rate_icu.png"), error = FALSE)
+
+```
+
+Let's skim the data to find out the variables, unique values and missing values:
+
+```{r}
+
+skim(covid_data)
+```
+Here, we have pre- processed the data, removing all missing, unknown and NA values so that we are left with a clean dataframe. Using this new dataframe, we calculated the death rate separately of COVID patients based on whether they had some other medical conditions and whether they were admitted in the ICU:
+
+```{r}
+
+library(dplyr)
+
+#Selecting required variables for our graphs
+
+covid_data <- covid_data %>% 
+  select(age_group, sex, death_yn, icu_yn, medcond_yn)
+
+#filtering to remove unwanted values
+
+covid_data <- drop_na(covid_data)
+
+filtered_data <- covid_data %>% 
+  filter(!icu_yn %in% c("Missing", "Unknown") & !death_yn %in% c("Missing", "Unknown") & !sex %in% c("Missing", "Unknown", "Other") & !age_group %in% c("Unknown") & !medcond_yn %in% c("Missing", "Unknown"))
+
+#calculating death rate for icu admits
+
+death_icu <- filtered_data %>%  
+  group_by(sex, age_group, icu_yn) %>% 
+  summarise(death_rate= count(death_yn=="Yes")/(count(death_yn=="Yes")+count(death_yn=="No"))) %>% 
+  mutate(death_rate=death_rate*100)
+death_icu %>% kbl() %>% kable_styling()
+
+#calculating death rate for presence/absence co-morbidities
+
+death_medcond <- filtered_data %>%  
+  group_by(sex, age_group, medcond_yn) %>% 
+  summarise(death_rate= count(death_yn=="Yes")/(count(death_yn=="Yes")+count(death_yn=="No"))) %>% 
+  mutate(death_rate=death_rate*100)
+death_medcond %>% kbl() %>% kable_styling()
+
+```
+We generated some useful graphs based on the death rate results we found from the previous code-
+
+1. Graph showing death % rate by age group, sex, and whether the patient had co-morbidities or not:
+
+As expected, the rate of death among both males and females having additional medical conditions was considerably higher than those who did not. Apart from that, elder people falling in the 70+ age intervals are a lot more prone to facing major consequences like death due to COVID than younger age groups that seem to recover more often.
+
+```{r, fig.width=12}
+
+# ordering and naming labels
+
+death_medcond$medcond_yn = factor(death_medcond$medcond_yn, levels=c('Yes','No'))
+
+new_labels <- list("Yes"="With co-morbidities", "No"= "Without co-morbidities")
+
+medcond_labeller <- function(variable,value){
+  return(new_labels[value])
+}
+
+#plotting graph
+
+p <- ggplot(death_medcond, aes(x=death_rate, y=age_group))+
+  geom_bar(stat="Identity", fill="blue", alpha= 0.5)+
+  facet_grid(medcond_yn ~ sex, labeller = labeller(medcond_yn=medcond_labeller))+
+  theme_bw()+
+  geom_text(aes(label=round(death_rate,1)), hjust = -0.2, size=2.5,position = position_dodge(width = 1))+
+  labs(subtitle ="Covid % death rate by age, sex and whether the patient has co-morbidites", x="", y="", caption = "Source: CDC") +
+  NULL
+
+p
+```
+
+2. Graph showing death % rate by age group, sex, and whether the patient was admited to Intensive Care Unit (ICU) or not:
+
+It can be observed that admission to ICU indicates more chances of death, steeply increasing among people above 70 years of age. 
+
+```{r fig.width=12}
+
+#ordering and naming labels
+
+death_icu$icu_yn = factor(death_icu$icu_yn, levels=c('Yes','No'))
+
+new_labels <- list("Yes"="Admitted to ICU", "No"= "No ICU")
+
+icu_labeller <- function(variable,value){
+  return(new_labels[value])
+}
+
+#plotting graph
+
+p <- ggplot(death_icu, aes(x=death_rate, y=age_group))+
+  geom_bar(stat="Identity", fill="red", alpha= 0.5)+
+  facet_grid(icu_yn ~ sex, labeller = labeller(icu_yn=icu_labeller))+
+  theme_bw()+
+  geom_text(aes(label=round(death_rate,1)), hjust = -0.2, size=2.5,position = position_dodge(width = 1))+
+  labs(subtitle ="Covid % death rate by age, sex and whether the patient was admitted to the ICU", x="", y="", caption = "Source: CDC") + 
+  NULL
+p
+```

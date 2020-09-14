@@ -92,10 +92,10 @@ disqusShortname = ""
     # Display your showcases here.
     
     [[params.tiles.showcase]]
-      title = "NYT Masks"
-      subtitle = "How does mask use acceptance vary in the US"
+      title = "Climate Change"
+      subtitle = "Climate change and temperature anomalies"
       image = "pic11.jpg"
-      url = "blogs/blog5"
+      url = "blogs/blog1"
 
     [[params.tiles.showcase]]
       title = "Tempus"
