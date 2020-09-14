@@ -9,6 +9,16 @@ image: pic11.jpg
 keywords: ""
 slug: blog1
 title: Climate Change
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    theme: flatly
+    highlight: zenburn
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+    code_folding: show
 ---
 
 
