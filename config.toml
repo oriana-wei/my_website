@@ -68,7 +68,7 @@ disqusShortname = ""
 
     # Button Style 1
     [[params.navigation.button1]]
-      name = "My Projects"
+      name = "Get started"
       url = "blogs"
 
     # Button Style 2
@@ -174,9 +174,9 @@ disqusShortname = ""
     title = "Email"
     email = "owei.mam2021@london.edu"
 
-#    [[params.contact.phone]]
-#    title = "Phone"
-#    phone = "(852)To be updated"
+    [[params.contact.phone]]
+    title = "Phone"
+    phone = "(852)To be updated"
 
     [[params.contact.address]]
     title = "Address"
