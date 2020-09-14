@@ -22,6 +22,17 @@
     </item>
     
     <item>
+      <title>COVID-19</title>
+      <link>/blogs/blog6/</link>
+      <pubDate>Sat, 05 Sep 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/blogs/blog6/</guid>
+      <description>CDC COVID-19 Public Use Data Let us use CDC Covid-19 Case Surveillance Data to plot some graphs.
+# URL link to CDC to download data url &amp;lt;- &amp;quot;https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD&amp;quot; covid_data &amp;lt;- vroom(url)%&amp;gt;% clean_names() Let’s skim the data to find out the variables, unique values and missing values:
+skim(covid_data)  Table 1: Data summary          Name  covid_data    Number of rows  3662325    Number of columns  11    _______________________     Column type frequency:     character  8    Date  3    ________________________     Group variables  None     Variable type: character</description>
+    </item>
+    
+    <item>
       <title>Aliquam</title>
       <link>/blogs/aliquam/</link>
       <pubDate>Tue, 31 Oct 2017 22:42:51 -0500</pubDate>

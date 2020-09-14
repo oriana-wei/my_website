@@ -92,16 +92,16 @@ disqusShortname = ""
     # Display your showcases here.
     
     [[params.tiles.showcase]]
-      title = "Trump's Approval Margins"
-      subtitle = "How do Trump's approval margins evolve?"
+      title = "Mask Acceptance"
+      subtitle = "Is mask acceptance high in the US? NYT Survey analysis"
       image = "pic07.jpg"
-      url = "blogs/blog6"
+      url = "blogs/blog5"
 
     [[params.tiles.showcase]]
-      title = "Tempus"
-      subtitle = "Feugiat Amet Tempus"
+      title = "COVID-19"
+      subtitle = "FCDC COVID-19 Public Use Data"
       image = "pic02.jpg"
-      url = "blogs/tempus"
+      url = "blogs/blog6"
 
     [[params.tiles.showcase]]
       title = "Magna"
