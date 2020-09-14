@@ -1,0 +1,209 @@
+---
+categories:
+- ""
+- ""
+date: "2020-09-04"
+description: Climate change and temperature anomalies 
+draft: false
+image: pic11.jpg
+keywords: ""
+slug: blog1
+title: Climate Change
+output:
+  html_document:
+    theme: flatly
+    highlight: zenburn
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+    code_folding: show
+  pdf_document:
+    toc: yes
+---
+
+
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+
+```{r load-libraries, include=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(httr)
+library(readxl)
+library(vroom)
+library(kableExtra)
+```
+
+
+
+
+# Climate change and temperature anomalies 
+
+
+To study climate change, we have used data on the *Combined Land-Surface Air and Sea-Surface Water Temperature Anomalies* in the Northern Hemisphere from [NASA's Goddard Institute for Space Studies](https://data.giss.nasa.gov/gistemp).
+
+The base period to calculate changes is taken as 1951-1980.While loading the data, `skip` and `na` are used to remove the first row and missing values respectively:
+
+```{r weather_data, cache=TRUE}
+
+weather <- 
+  read_csv("https://data.giss.nasa.gov/gistemp/tabledata_v3/NH.Ts+dSST.csv", 
+           skip = 1, 
+           na = "***")
+
+```
+
+
+We've converted the dataframe from wide to 'long' format and defined variables month as `month`, and the temperature deviation values as `delta`.
+
+```{r tidyweather}
+glimpse(weather)
+
+## convert df from wide to long, creating a "Month" and a "Delta" variable 
+
+tidyweather <- weather %>% select(1:13) %>% pivot_longer(cols = 2:13, names_to = "month", values_to = "delta")
+tidyweather %>% kbl() %>% kable_styling()
+```
+
+Let us plot the data using a time-series scatter plot, and add a trendline. To do that, we first need to create a new variable called `date` in order to ensure that the `delta` values are plot chronologically.
+
+```{r scatter_plot}
+
+tidyweather <- tidyweather %>%
+  mutate(date = ymd(paste(as.character(Year), month, "1")),
+         month = month(date),
+         year = year(date))
+
+ggplot(tidyweather, aes(x=date, y = delta, colour = date)) +
+  geom_point() +
+  geom_smooth(color="white") + 
+  theme(plot.title = element_text(face = "bold", size = 18)) + 
+  theme_bw() + 
+  scale_colour_gradient(low="blue2", high="red") +
+  labs (
+    title = "Temperature Anomalies Heating Up Over Past Century", 
+  subtitle = "Combined land-surface air and sea-surface water temperature anomalies in the northern \nhemisphere have shifted from negative to positive in the last 100 years", x = "Year", y = "Delta", caption = "Source: NASA's Goddard Institute for Space Studies") +
+  theme(legend.position = "none", plot.title = element_text(face = "bold"), axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))
+
+```
+
+On analysing the temperature difference through different months, we find that the effects of increasing temperature appear to be homogeneous throughout different months. 
+
+```{r facet_wrap}
+## add to the title/sub , can i thin the smoothing line? , make the theme prettier (no grey months)
+ggplot(tidyweather, aes(x=date, y = delta, colour = date))+
+  geom_point()+
+  geom_smooth(color="white") +
+  theme_bw() +
+  scale_colour_gradient(low="blue2", high="red") +
+  labs (
+    title = "Monthly Anomalies Appear Homogeneous Over Time ", 
+  subtitle = "Anomalies appear not to discriminate based on month, with monthly patterns being nearly \nindistinguishable from one another", x = "Year", y = "Delta", caption = "Source: NASA's Goddard Institute for Space Studies") +
+  facet_wrap(~month) + 
+  theme(legend.position = "none", plot.title = element_text(face = "bold"), axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))
+
+```
+
+Here, the years are divided into intervals to help study the data better:
+
+
+```{r intervals}
+
+comparison <- tidyweather %>% 
+  filter(year>= 1881) %>%     #remove years prior to 1881
+  #create new variable 'interval', and assign values based on criteria below:
+  mutate(interval = case_when(
+    Year %in% c(1881:1920) ~ "1881-1920",
+    Year %in% c(1921:1950) ~ "1921-1950",
+    Year %in% c(1951:1980) ~ "1951-1980",
+    Year %in% c(1981:2010) ~ "1981-2010",
+    TRUE ~ "2011-present"
+  ))
+
+```
+
+
+Now that we have the `interval` variable, we can create a density plot to study the distribution of monthly deviations (`delta`), grouped by the different time periods we are interested in. Set `fill` to `interval` to group and colour the data by different time periods.
+
+```{r density_plot, eval=FALSE}
+## fix the colors 
+ggplot(comparison, aes(x=delta, fill=interval, colour = interval))+
+  
+  #density plot with tranparency set to 20%
+  
+  geom_density(alpha=0.2) +   
+  theme_bw() +                
+  labs(
+    title = "Density Plot for Monthly Temperature Anomalies",
+    subtitle = "A clear increase in temperature anomalies shown through time periods \nfrom 1881 to present day",
+    x = "Delta",
+    y     = "Density",
+    caption = "Source: NASA's Goddard Institute for Space Studies")  + 
+  scale_fill_manual(values = c("blue2", "darkorchid4", "purple1", "red1", "red"))  + 
+  scale_color_manual(values = c("blue2", "darkorchid4", "purple1", "red1", "red")) +
+  theme(plot.title = element_text(face = "bold"), axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))+
+  guides(color=guide_legend("Time Period"),fill=guide_legend("Time Period"))
+
+```
+
+So far, we have been working with monthly anomalies. However, we might be interested in average annual anomalies. We can do this by using `group_by()` and `summarise()`, followed by a scatter plot to display the result. 
+
+```{r averaging, eval=FALSE}
+
+#creating yearly averages
+average_annual_anomaly <- tidyweather %>% 
+  group_by(year) %>%   #grouping data by Year
+  
+  # creating summaries for mean delta 
+  # use `na.rm=TRUE` to eliminate NA (not available) values 
+  summarise(annual_average_anomaly = mean(delta, na.rm=TRUE)) 
+
+#plotting the data:
+ggplot(average_annual_anomaly, aes(x=year, y= annual_average_anomaly, colour = year))+
+  geom_point()+
+  
+  #Fit the best fit line, using LOESS method
+  geom_smooth(colour = "white") +
+  
+  #change to theme_bw() to have white background + black frame around plot
+  theme_bw() +
+  
+    ## add color gradient
+  scale_colour_gradient(low="blue2", high="red") +
+  
+  labs (
+    title = "Average Yearly Temperature Anomaly Signifies Steep Temperature Increase in Past 50 Years",
+    subtitle = "Yearly temperature anomaly has accelerated significantly in more recent years, raising concern among climate scientists",
+    y = "Average Annual Delta",
+    x = "Year",
+    caption = "Source: NASA's Goddard Institute for Space Studies")  +
+  
+  theme(legend.position = "none", plot.title = element_text(face = "bold"), axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))
+## make more clear 
+
+```
+
