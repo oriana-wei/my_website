@@ -1,14 +1,14 @@
 ---
 categories:
-- ""
-- ""
-date: "2020-09-04"
+- ''
+- ''
+title: "Trump's Approval Margins"
+date: '2020-09-04'
 description: How do Trump's approval margins evolve?
-draft: false
+draft: no
 image: pic07.jpg
-keywords: ""
-slug: blog5
-title: Trump's Approval Margins
+keywords: ''
+slug: blog6
 ---
 
 
