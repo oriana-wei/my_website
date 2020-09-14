@@ -20,7 +20,7 @@ disqusShortname = ""
 
   # Provide your metadata here.
   name = "Oriana Wei"
-  description = "Current LBS student and future business analyst"
+  description = "Come and meet Oriana and her R projects"
 
   # Link custom assets relative to /static
   custom_css = []
@@ -32,7 +32,7 @@ disqusShortname = ""
 
   # 404 error customization
   [params.error404]
-    heading = "Page couldn't be found"
+    heading = "Page couldn't be found:("
     text = "Please visit [this page](/)"
 
   # Navigation Section
@@ -47,9 +47,9 @@ disqusShortname = ""
       name = "Home"
       url = "#"
 
-    [[params.navigation.links]]
-      name = "Blogs"
-      url = "blogs"
+#    [[params.navigation.links]]
+#      name = "Blogs"
+#      url = "blogs"
 
 #    [[params.navigation.links]]
 #      name = "Generic Blog"
@@ -68,7 +68,7 @@ disqusShortname = ""
 
     # Button Style 1
     [[params.navigation.button1]]
-      name = "Get started"
+      name = "My Projects"
       url = "blogs"
 
     # Button Style 2
@@ -81,7 +81,7 @@ disqusShortname = ""
   [params.banner]
     # To change the background image on the homepage banner, replace 'banner.jpg' in
     # the 'static/img' folder.
-    title = "Hi, my name is Oriana"
+    title = "Hi, this is Oriana"
     subtitle = "Portfolio Website for Oriana Wei"
     buttonText = "Get Started"
 
@@ -91,11 +91,11 @@ disqusShortname = ""
     enable = true
     # Display your showcases here.
     
-    [[params.tiles.showcase]]
-      title = "Mask Acceptance"
-      subtitle = "Is mask acceptance high in the US? NYT Survey analysis"
-      image = "pic07.jpg"
-      url = "blogs/blog5"
+#    [[params.tiles.showcase]]
+#      title = "Mask Acceptance"
+#      subtitle = "Is mask acceptance high in the US? NYT Survey analysis"
+#      image = "pic07.jpg"
+#      url = "blogs/blog5"
 
     [[params.tiles.showcase]]
       title = "COVID-19"
