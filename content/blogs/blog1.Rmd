@@ -3,22 +3,12 @@ categories:
 - ""
 - ""
 date: "2020-09-04"
-description: Climate change and temperature anomalies 
+description: How do Trump's approval margins evolve?
 draft: false
 image: pic11.jpg
 keywords: ""
 slug: blog1
-title: Climate Change
-output:
-  html_document:
-    theme: flatly
-    highlight: zenburn
-    number_sections: yes
-    toc: yes
-    toc_float: yes
-    code_folding: show
-  pdf_document:
-    toc: yes
+title: Trump's Approval Margins
 ---
 
 
@@ -56,154 +46,107 @@ library(kableExtra)
 
 
 
+# Trump's Approval Margins
 
-# Climate change and temperature anomalies 
+As we saw in class, fivethirtyeight.com has detailed data on [all polls that track the president's approval ](https://projects.fivethirtyeight.com/trump-approval-ratings)
 
+```{r, cache=TRUE}
 
-To study climate change, we have used data on the *Combined Land-Surface Air and Sea-Surface Water Temperature Anomalies* in the Northern Hemisphere from [NASA's Goddard Institute for Space Studies](https://data.giss.nasa.gov/gistemp).
+# Import approval polls data
+# approval_polllist <- read_csv(here::here('data', 'approval_polllist.csv'))
 
-The base period to calculate changes is taken as 1951-1980.While loading the data, `skip` and `na` are used to remove the first row and missing values respectively:
+# or directly off fivethirtyeight website
+approval_polllist <- read_csv('https://projects.fivethirtyeight.com/trump-approval-data/approval_polllist.csv') 
 
-```{r weather_data, cache=TRUE}
+glimpse(approval_polllist) 
 
-weather <- 
-  read_csv("https://data.giss.nasa.gov/gistemp/tabledata_v3/NH.Ts+dSST.csv", 
-           skip = 1, 
-           na = "***")
+```
+
+```{r}
+
+# Use `lubridate` to fix dates, as they are given as characters.
+approval_polllist$new_modeldate <- as.Date(approval_polllist$modeldate,
+                         format = "%m/%d/%Y")
+approval_polllist$new_startdate <- as.Date(approval_polllist$startdate,
+                         format = "%m/%d/%Y")
+approval_polllist$new_enddate <- as.Date(approval_polllist$enddate,
+                         format = "%m/%d/%Y")
+approval_polllist$new_createddate <- as.Date(approval_polllist$createddate,
+                         format = "%m/%d/%Y")
+approval_polllist$new_timestamp <- as.POSIXct(approval_polllist$timestamp,
+                          format = "%H:%M:%S %d %b %Y")
+approval_polllist %>% kbl() %>% kable_styling()
+
+```
+
+## Create a plot
+
+What I would like you to do is to calculate the average net approval rate (approve- disapprove) for each week since he got into office. I want you plot the net approval, along with its 95% confidence interval. There are various dates given for each poll, please use `enddate`, i.e., the date the poll ended.
+```{r}
+
+#add week number of each enddate
+week_list <- approval_polllist %>%
+mutate(week = lubridate::week(ymd(approval_polllist$new_enddate)))
+week_list %>% kbl() %>% kable_styling()
+
+#add a column for year+week
+approval_year <- week_list %>% 
+  mutate(year=year(new_enddate),
+         year_week=year(new_enddate)* 100 + week)
+approval_year %>% kbl() %>% kable_styling()
+
+#calculate the average net approval rate and CI of each week 
+week_mean <- approval_year %>% 
+  group_by(year_week) %>% 
+  mutate(approval_mean=mean(approve-disapprove), 
+         sd_approval=sd(approve-disapprove),
+         count=n(),
+         t_critical=qt(0.975, count-1),
+         se_approval=sd(approve-disapprove)/sqrt(count),
+            margin_of_error=t_critical*se_approval,
+            approval_low=approval_mean-margin_of_error,
+            approval_high=approval_mean+margin_of_error)
+week_mean %>% kbl() %>% kable_styling()
+
+#finalize the data set showing on the plot
+final_plot <- week_mean %>%
+  select(year,
+         week,
+         approval_mean,
+         approval_high,
+         approval_low )
+
+final_plot %>% kbl() %>% kable_styling()
+```
+
+```{r, fig.width=12, fig.height= 6}
+
+#plotting
+library(reshape2)
+#show_plot <- melt(final_plot,id.vars = "week")
+
+ggplot(final_plot, aes(x = week, y = approval_mean, color = as.factor(year))) +
+  geom_point(size = 1) +
+  geom_line()+ 
+  geom_ribbon(aes(ymin = approval_low, ymax = approval_high), alpha = 0.08)+
+  facet_wrap(~year)+
+  labs(title = "Estimating Net Approval (approve-disapprove) for Donald Trump", 
+       subtitle = "Weekly average of all polls", 
+       x = "Week of the year", 
+       y = "Average Net Approval(%)") +
+#change xy ratio and extend x
+    coord_fixed(ratio=1/2) +
+    scale_y_continuous(breaks=seq(-20, 7.5, 2.5)) +
+    scale_x_continuous(breaks=seq(0, 52, 13)) +
+    theme_bw() +
+  theme(legend.position = "none") +
+    geom_hline(aes(yintercept = 0), colour = "orange") +
+  #scale_x_continous(breaks=seq(-20,7.5,2.5)) +
+  #scale_color_manual( values = c("blue","yellow","red","green"))+
+  NULL
 
 ```
 
 
-We've converted the dataframe from wide to 'long' format and defined variables month as `month`, and the temperature deviation values as `delta`.
 
-```{r tidyweather}
-glimpse(weather)
-
-## convert df from wide to long, creating a "Month" and a "Delta" variable 
-
-tidyweather <- weather %>% select(1:13) %>% pivot_longer(cols = 2:13, names_to = "month", values_to = "delta")
-tidyweather %>% kbl() %>% kable_styling()
-```
-
-Let us plot the data using a time-series scatter plot, and add a trendline. To do that, we first need to create a new variable called `date` in order to ensure that the `delta` values are plot chronologically.
-
-```{r scatter_plot}
-
-tidyweather <- tidyweather %>%
-  mutate(date = ymd(paste(as.character(Year), month, "1")),
-         month = month(date),
-         year = year(date))
-
-ggplot(tidyweather, aes(x=date, y = delta, colour = date)) +
-  geom_point() +
-  geom_smooth(color="white") + 
-  theme(plot.title = element_text(face = "bold", size = 18)) + 
-  theme_bw() + 
-  scale_colour_gradient(low="blue2", high="red") +
-  labs (
-    title = "Temperature Anomalies Heating Up Over Past Century", 
-  subtitle = "Combined land-surface air and sea-surface water temperature anomalies in the northern \nhemisphere have shifted from negative to positive in the last 100 years", x = "Year", y = "Delta", caption = "Source: NASA's Goddard Institute for Space Studies") +
-  theme(legend.position = "none", plot.title = element_text(face = "bold"), axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-```
-
-On analysing the temperature difference through different months, we find that the effects of increasing temperature appear to be homogeneous throughout different months. 
-
-```{r facet_wrap}
-## add to the title/sub , can i thin the smoothing line? , make the theme prettier (no grey months)
-ggplot(tidyweather, aes(x=date, y = delta, colour = date))+
-  geom_point()+
-  geom_smooth(color="white") +
-  theme_bw() +
-  scale_colour_gradient(low="blue2", high="red") +
-  labs (
-    title = "Monthly Anomalies Appear Homogeneous Over Time ", 
-  subtitle = "Anomalies appear not to discriminate based on month, with monthly patterns being nearly \nindistinguishable from one another", x = "Year", y = "Delta", caption = "Source: NASA's Goddard Institute for Space Studies") +
-  facet_wrap(~month) + 
-  theme(legend.position = "none", plot.title = element_text(face = "bold"), axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-
-```
-
-Here, the years are divided into intervals to help study the data better:
-
-
-```{r intervals}
-
-comparison <- tidyweather %>% 
-  filter(year>= 1881) %>%     #remove years prior to 1881
-  #create new variable 'interval', and assign values based on criteria below:
-  mutate(interval = case_when(
-    Year %in% c(1881:1920) ~ "1881-1920",
-    Year %in% c(1921:1950) ~ "1921-1950",
-    Year %in% c(1951:1980) ~ "1951-1980",
-    Year %in% c(1981:2010) ~ "1981-2010",
-    TRUE ~ "2011-present"
-  ))
-
-```
-
-
-Now that we have the `interval` variable, we can create a density plot to study the distribution of monthly deviations (`delta`), grouped by the different time periods we are interested in. Set `fill` to `interval` to group and colour the data by different time periods.
-
-```{r density_plot, eval=FALSE}
-## fix the colors 
-ggplot(comparison, aes(x=delta, fill=interval, colour = interval))+
-  
-  #density plot with tranparency set to 20%
-  
-  geom_density(alpha=0.2) +   
-  theme_bw() +                
-  labs(
-    title = "Density Plot for Monthly Temperature Anomalies",
-    subtitle = "A clear increase in temperature anomalies shown through time periods \nfrom 1881 to present day",
-    x = "Delta",
-    y     = "Density",
-    caption = "Source: NASA's Goddard Institute for Space Studies")  + 
-  scale_fill_manual(values = c("blue2", "darkorchid4", "purple1", "red1", "red"))  + 
-  scale_color_manual(values = c("blue2", "darkorchid4", "purple1", "red1", "red")) +
-  theme(plot.title = element_text(face = "bold"), axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))+
-  guides(color=guide_legend("Time Period"),fill=guide_legend("Time Period"))
-
-```
-
-So far, we have been working with monthly anomalies. However, we might be interested in average annual anomalies. We can do this by using `group_by()` and `summarise()`, followed by a scatter plot to display the result. 
-
-```{r averaging, eval=FALSE}
-
-#creating yearly averages
-average_annual_anomaly <- tidyweather %>% 
-  group_by(year) %>%   #grouping data by Year
-  
-  # creating summaries for mean delta 
-  # use `na.rm=TRUE` to eliminate NA (not available) values 
-  summarise(annual_average_anomaly = mean(delta, na.rm=TRUE)) 
-
-#plotting the data:
-ggplot(average_annual_anomaly, aes(x=year, y= annual_average_anomaly, colour = year))+
-  geom_point()+
-  
-  #Fit the best fit line, using LOESS method
-  geom_smooth(colour = "white") +
-  
-  #change to theme_bw() to have white background + black frame around plot
-  theme_bw() +
-  
-    ## add color gradient
-  scale_colour_gradient(low="blue2", high="red") +
-  
-  labs (
-    title = "Average Yearly Temperature Anomaly Signifies Steep Temperature Increase in Past 50 Years",
-    subtitle = "Yearly temperature anomaly has accelerated significantly in more recent years, raising concern among climate scientists",
-    y = "Average Annual Delta",
-    x = "Year",
-    caption = "Source: NASA's Goddard Institute for Space Studies")  +
-  
-  theme(legend.position = "none", plot.title = element_text(face = "bold"), axis.text=element_text(size=12),
-        axis.title=element_text(size=14,face="bold"))
-## make more clear 
-
-```
 

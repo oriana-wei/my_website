@@ -92,8 +92,8 @@ disqusShortname = ""
     # Display your showcases here.
     
     [[params.tiles.showcase]]
-      title = "Climate Change"
-      subtitle = "Climate change and temperature anomalies"
+      title = "Trump's Approval Margins"
+      subtitle = "How do Trump's approval margins evolve?"
       image = "pic11.jpg"
       url = "blogs/blog1"
 
