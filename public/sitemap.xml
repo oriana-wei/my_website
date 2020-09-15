@@ -38,8 +38,13 @@
   </url>
   
   <url>
-    <loc>/blogs/aliquam/</loc>
-    <lastmod>2017-10-31T22:42:51-05:00</lastmod>
+    <loc>/blogs/share/</loc>
+    <lastmod>2018-09-01T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/blogs/bytedance/</loc>
+    <lastmod>2018-01-31T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -48,18 +53,13 @@
   </url>
   
   <url>
-    <loc>/blogs/tempus/</loc>
-    <lastmod>2017-10-31T22:26:13-05:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>/blogs/magna/</loc>
-    <lastmod>2017-10-31T22:26:09-05:00</lastmod>
-  </url>
-  
-  <url>
     <loc>/projects1/</loc>
     <lastmod>2017-10-31T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/blogs/tsinghua/</loc>
+    <lastmod>2017-07-31T00:00:00+00:00</lastmod>
   </url>
   
   <url>

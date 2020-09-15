@@ -2,11 +2,11 @@
 categories:
 - ""
 - ""
-date: "2017-10-31T22:26:09-05:00"
-description: Lorem Etiam Nullam
+date: "2018-09-01"
+description: My most unforgettable student club experience in university
 draft: false
-image: pic09.jpg
+image: share.jpg
 keywords: ""
-slug: magna
-title: Magna
+slug: ShARE
+title: ShARE Student Organization
 ---
