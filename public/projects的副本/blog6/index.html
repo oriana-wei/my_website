@@ -1,0 +1,1701 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Come and meet Oriana and her R projects">
+	<meta name="author" content="Oriana Wei">
+	<meta name="generator" content="Hugo 0.74.3" />
+	<title>COVID-19 &middot; Portfolio Webste for Oriana Wei</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Oriana</strong> <span></span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/Projects" class="button special fit">My Projects</a></li>
+            
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>COVID-19</h1>
+                            </header>
+                            
+                                <span class="image main"><img src="/img/Projects%e7%9a%84%e5%89%af%e6%9c%ac/pic02.jpg" alt="" /></span>
+                            
+                            
+<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+
+
+<div id="cdc-covid-19-public-use-data" class="section level1">
+<h1>CDC COVID-19 Public Use Data</h1>
+<p>Let us use <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf">CDC Covid-19 Case Surveillance Data</a> to plot some graphs.</p>
+<pre class="r"><code># URL link to CDC to download data
+url &lt;- &quot;https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD&quot;
+
+covid_data &lt;- vroom(url)%&gt;%
+  clean_names()</code></pre>
+<p>Let’s skim the data to find out the variables, unique values and missing values:</p>
+<pre class="r"><code>skim(covid_data)</code></pre>
+<table style='width: auto;'
+        class='table table-condensed'>
+<caption>
+<span id="tab:unnamed-chunk-2">Table 1: </span>Data summary
+</caption>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:left;">
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Name
+</td>
+<td style="text-align:left;">
+covid_data
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Number of rows
+</td>
+<td style="text-align:left;">
+3662325
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Number of columns
+</td>
+<td style="text-align:left;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+_______________________
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Column type frequency:
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+character
+</td>
+<td style="text-align:left;">
+8
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Date
+</td>
+<td style="text-align:left;">
+3
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+________________________
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Group variables
+</td>
+<td style="text-align:left;">
+None
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+skim_variable
+</th>
+<th style="text-align:right;">
+n_missing
+</th>
+<th style="text-align:right;">
+complete_rate
+</th>
+<th style="text-align:right;">
+min
+</th>
+<th style="text-align:right;">
+max
+</th>
+<th style="text-align:right;">
+empty
+</th>
+<th style="text-align:right;">
+n_unique
+</th>
+<th style="text-align:right;">
+whitespace
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+current_status
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+sex
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+age_group
+</td>
+<td style="text-align:right;">
+94
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+race_and_ethnicity_combined
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+hosp_yn
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+icu_yn
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+death_yn
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+medcond_yn
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: Date</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+skim_variable
+</th>
+<th style="text-align:right;">
+n_missing
+</th>
+<th style="text-align:right;">
+complete_rate
+</th>
+<th style="text-align:left;">
+min
+</th>
+<th style="text-align:left;">
+max
+</th>
+<th style="text-align:left;">
+median
+</th>
+<th style="text-align:right;">
+n_unique
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+cdc_report_dt
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1.00
+</td>
+<td style="text-align:left;">
+2020-01-01
+</td>
+<td style="text-align:left;">
+2020-08-16
+</td>
+<td style="text-align:left;">
+2020-06-23
+</td>
+<td style="text-align:right;">
+225
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+pos_spec_dt
+</td>
+<td style="text-align:right;">
+2331742
+</td>
+<td style="text-align:right;">
+0.36
+</td>
+<td style="text-align:left;">
+2020-01-01
+</td>
+<td style="text-align:left;">
+2020-08-28
+</td>
+<td style="text-align:left;">
+2020-05-16
+</td>
+<td style="text-align:right;">
+205
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+onset_dt
+</td>
+<td style="text-align:right;">
+1772698
+</td>
+<td style="text-align:right;">
+0.52
+</td>
+<td style="text-align:left;">
+2020-01-01
+</td>
+<td style="text-align:left;">
+2020-08-30
+</td>
+<td style="text-align:left;">
+2020-06-06
+</td>
+<td style="text-align:right;">
+243
+</td>
+</tr>
+</tbody>
+</table>
+<p>Here, we have pre- processed the data, removing all missing, unknown and NA values so that we are left with a clean dataframe. Using this new dataframe, we calculated the death rate separately of COVID patients based on whether they had some other medical conditions and whether they were admitted in the ICU:</p>
+<pre class="r"><code>library(dplyr)
+
+#Selecting required variables for our graphs
+
+covid_data &lt;- covid_data %&gt;% 
+  select(age_group, sex, death_yn, icu_yn, medcond_yn)
+
+#filtering to remove unwanted values
+
+covid_data &lt;- drop_na(covid_data)
+
+filtered_data &lt;- covid_data %&gt;% 
+  filter(!icu_yn %in% c(&quot;Missing&quot;, &quot;Unknown&quot;) &amp; !death_yn %in% c(&quot;Missing&quot;, &quot;Unknown&quot;) &amp; !sex %in% c(&quot;Missing&quot;, &quot;Unknown&quot;, &quot;Other&quot;) &amp; !age_group %in% c(&quot;Unknown&quot;) &amp; !medcond_yn %in% c(&quot;Missing&quot;, &quot;Unknown&quot;))
+
+#calculating death rate for icu admits
+
+death_icu &lt;- filtered_data %&gt;%  
+  group_by(sex, age_group, icu_yn) %&gt;% 
+  summarise(death_rate= count(death_yn==&quot;Yes&quot;)/(count(death_yn==&quot;Yes&quot;)+count(death_yn==&quot;No&quot;))) %&gt;% 
+  mutate(death_rate=death_rate*100)
+death_icu %&gt;% kbl() %&gt;% kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+sex
+</th>
+<th style="text-align:left;">
+age_group
+</th>
+<th style="text-align:left;">
+icu_yn
+</th>
+<th style="text-align:right;">
+death_rate
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+0 - 9 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.187
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+0 - 9 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+4.878
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+10 - 19 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.037
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+10 - 19 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+9.231
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+20 - 29 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.054
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+20 - 29 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+15.166
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+30 - 39 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.129
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+30 - 39 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+24.935
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+40 - 49 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.427
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+40 - 49 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+32.539
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+50 - 59 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+1.406
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+50 - 59 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+46.247
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+60 - 69 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+4.577
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+60 - 69 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+57.503
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+70 - 79 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+13.895
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+70 - 79 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+69.684
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+80+ Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+38.376
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+80+ Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+78.195
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+0 - 9 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.037
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+0 - 9 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+9.091
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+10 - 19 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.054
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+10 - 19 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+13.483
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+20 - 29 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.164
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+20 - 29 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+24.806
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+30 - 39 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.402
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+30 - 39 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+37.291
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+40 - 49 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+1.003
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+40 - 49 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+44.027
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+50 - 59 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+2.591
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+50 - 59 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+53.305
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+60 - 69 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+7.315
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+60 - 69 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+65.276
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+70 - 79 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+19.268
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+70 - 79 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+73.167
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+80+ Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+46.735
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+80+ Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+82.146
+</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>#calculating death rate for presence/absence co-morbidities
+
+death_medcond &lt;- filtered_data %&gt;%  
+  group_by(sex, age_group, medcond_yn) %&gt;% 
+  summarise(death_rate= count(death_yn==&quot;Yes&quot;)/(count(death_yn==&quot;Yes&quot;)+count(death_yn==&quot;No&quot;))) %&gt;% 
+  mutate(death_rate=death_rate*100)
+death_medcond %&gt;% kbl() %&gt;% kable_styling()</code></pre>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+sex
+</th>
+<th style="text-align:left;">
+age_group
+</th>
+<th style="text-align:left;">
+medcond_yn
+</th>
+<th style="text-align:right;">
+death_rate
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+0 - 9 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.058
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+0 - 9 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+0.598
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+10 - 19 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.019
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+10 - 19 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+0.276
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+20 - 29 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.021
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+20 - 29 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+0.480
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+30 - 39 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.109
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+30 - 39 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+1.234
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+40 - 49 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.258
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+40 - 49 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+2.767
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+50 - 59 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.558
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+50 - 59 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+7.032
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+60 - 69 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+1.665
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+60 - 69 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+15.501
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+70 - 79 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+7.317
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+70 - 79 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+29.077
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+80+ Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+25.579
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Female
+</td>
+<td style="text-align:left;">
+80+ Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+46.484
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+0 - 9 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.117
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+0 - 9 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+0.377
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+10 - 19 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.042
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+10 - 19 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+0.516
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+20 - 29 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.104
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+20 - 29 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+1.267
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+30 - 39 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.317
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+30 - 39 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+3.808
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+40 - 49 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+0.976
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+40 - 49 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+7.283
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+50 - 59 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+2.325
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+50 - 59 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+13.273
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+60 - 69 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+4.203
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+60 - 69 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+25.118
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+70 - 79 Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+10.796
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+70 - 79 Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+39.252
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+80+ Years
+</td>
+<td style="text-align:left;">
+No
+</td>
+<td style="text-align:right;">
+31.301
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Male
+</td>
+<td style="text-align:left;">
+80+ Years
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+<td style="text-align:right;">
+57.882
+</td>
+</tr>
+</tbody>
+</table>
+<p>We generated some useful graphs based on the death rate results we found from the previous code-</p>
+<ol style="list-style-type: decimal">
+<li>Graph showing death % rate by age group, sex, and whether the patient had co-morbidities or not:</li>
+</ol>
+<p>As expected, the rate of death among both males and females having additional medical conditions was considerably higher than those who did not. Apart from that, elder people falling in the 70+ age intervals are a lot more prone to facing major consequences like death due to COVID than younger age groups that seem to recover more often.</p>
+<pre class="r"><code># ordering and naming labels
+
+death_medcond$medcond_yn = factor(death_medcond$medcond_yn, levels=c(&#39;Yes&#39;,&#39;No&#39;))
+
+new_labels &lt;- list(&quot;Yes&quot;=&quot;With co-morbidities&quot;, &quot;No&quot;= &quot;Without co-morbidities&quot;)
+
+medcond_labeller &lt;- function(variable,value){
+  return(new_labels[value])
+}
+
+#plotting graph
+
+p &lt;- ggplot(death_medcond, aes(x=death_rate, y=age_group))+
+  geom_bar(stat=&quot;Identity&quot;, fill=&quot;blue&quot;, alpha= 0.5)+
+  facet_grid(medcond_yn ~ sex, labeller = labeller(medcond_yn=medcond_labeller))+
+  theme_bw()+
+  geom_text(aes(label=round(death_rate,1)), hjust = -0.2, size=2.5,position = position_dodge(width = 1))+
+  labs(subtitle =&quot;Covid % death rate by age, sex and whether the patient has co-morbidites&quot;, x=&quot;&quot;, y=&quot;&quot;, caption = &quot;Source: CDC&quot;) +
+  NULL
+
+p</code></pre>
+<p><img src="/blogs/blog6_files/figure-html/unnamed-chunk-4-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<ol start="2" style="list-style-type: decimal">
+<li>Graph showing death % rate by age group, sex, and whether the patient was admited to Intensive Care Unit (ICU) or not:</li>
+</ol>
+<p>It can be observed that admission to ICU indicates more chances of death, steeply increasing among people above 70 years of age.</p>
+<pre class="r"><code>#ordering and naming labels
+
+death_icu$icu_yn = factor(death_icu$icu_yn, levels=c(&#39;Yes&#39;,&#39;No&#39;))
+
+new_labels &lt;- list(&quot;Yes&quot;=&quot;Admitted to ICU&quot;, &quot;No&quot;= &quot;No ICU&quot;)
+
+icu_labeller &lt;- function(variable,value){
+  return(new_labels[value])
+}
+
+#plotting graph
+
+p &lt;- ggplot(death_icu, aes(x=death_rate, y=age_group))+
+  geom_bar(stat=&quot;Identity&quot;, fill=&quot;red&quot;, alpha= 0.5)+
+  facet_grid(icu_yn ~ sex, labeller = labeller(icu_yn=icu_labeller))+
+  theme_bw()+
+  geom_text(aes(label=round(death_rate,1)), hjust = -0.2, size=2.5,position = position_dodge(width = 1))+
+  labs(subtitle =&quot;Covid % death rate by age, sex and whether the patient was admitted to the ICU&quot;, x=&quot;&quot;, y=&quot;&quot;, caption = &quot;Source: CDC&quot;) + 
+  NULL
+p</code></pre>
+<p><img src="/blogs/blog6_files/figure-html/unnamed-chunk-5-1.png" width="1152" style="display: block; margin: auto;" /></p>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://www.instagram.com/ops_orianaway/" class="icon alt fa-instagram" target="_blank"><span class="label">Instagram</span></a></li>
+                
+                    <li><a href="https://github.com/oriana-wei" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/orianawei" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Oriana Wei</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>

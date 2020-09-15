@@ -1,16 +1,82 @@
----
-categories:
-- ""
-- ""
-date: "2020-09-06"
-description: Excess rentals in TfL bike sharing
-draft: false
-image: pic03.jpg
-keywords: ""
-slug: blog7
-title: Bike Sharing
----
+<!DOCTYPE HTML>
+<html>
 
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Come and meet Oriana and her R projects">
+	<meta name="author" content="Oriana Wei">
+	<meta name="generator" content="Hugo 0.74.3" />
+	<title>Bike Sharing &middot; Portfolio Webste for Oriana Wei</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Oriana</strong> <span></span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/Projects1" class="button special fit">My Projects</a></li>
+            
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>Bike Sharing</h1>
+                            </header>
+                            
+                                <span class="image main"><img src="/img/Projects1/pic03.jpg" alt="" /></span>
+                            
+                            
 <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
@@ -20,12 +86,12 @@ title: Bike Sharing
 
 # Download TFL data to temporary file
 httr::GET(url, write_disk(bike.temp &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
-<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2020-08-26T09%3A19%3A21/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20200914%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20200914T173216Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=dedf5e684131a9e20c7c31db515b94747845d08aaaede8ecfc9f04df0f923aa8&amp;X-Amz-SignedHeaders=host]
-##   Date: 2020-09-14 17:32
+<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2020-08-26T09%3A19%3A21/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20200915%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20200915T072738Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=ab0a58ade6128c570357efb93270704c5a838d31404299aac6d2d39f988ecb08&amp;X-Amz-SignedHeaders=host]
+##   Date: 2020-09-15 07:27
 ##   Status: 200
 ##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 ##   Size: 164 kB
-## &lt;ON DISK&gt;  /var/folders/sy/j0yjcqzn57n43076k22vm9040000gn/T//RtmpmCIrA6/file7eb97e9e4f23.xlsx</code></pre>
+## &lt;ON DISK&gt;  /var/folders/sy/j0yjcqzn57n43076k22vm9040000gn/T//RtmpY0fnjD/filec15a77188828.xlsx</code></pre>
 <pre class="r"><code># Use read_excel to read it as dataframe
 bike0 &lt;- read_excel(bike.temp,
                    sheet = &quot;Data&quot;,
@@ -40,8 +106,6 @@ bike &lt;- bike0 %&gt;%
           week = isoweek(day))</code></pre>
 <p>When we look at May and Jun and compare 2020 with the previous years, we can clearly see the decrease in bike rentals for 2020. It is quite obvious that this is the effect of the COVID-19 situation and the subsequent lockdown which prevented people from going outdoors.</p>
 <p>The first graph that we replicated shows the monthly changes in the number of TfL bike rentals for the period 2015-2020.</p>
-<p>Original picture:</p>
-<p><img src="/Users/oriana/Desktop/LBS_T1_Course/AM01 | Applied Statistics/my_website/images/tfl_monthly.png" width="100%" style="display: block; margin: auto;" /></p>
 <p>Our code for the replicated graph:</p>
 <pre class="r"><code># Calculate variables that feed into the graph
 
@@ -947,7 +1011,7 @@ ggplot()+
   )+
   NULL
 plot_1</code></pre>
-<p><img src="/blogs/blog7_files/figure-html/unnamed-chunk-1-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p><img src="/Projects1/blog7_files/figure-html/unnamed-chunk-1-1.png" width="960" style="display: block; margin: auto;" /></p>
 <p>For both of these graphs, you have to calculate the expected number of rentals per week or month between 2015-2019 and then, see how each week/month of 2020 compares to the expected rentals. Think of the calculation <code>excess_rentals = actual_rentals - expected_rentals</code>.</p>
 <p>Should you use the mean or the median to calculate your expected rentals? Why?</p>
 <p>In creating your plots, you may find these links useful:</p>
@@ -4678,4 +4742,57 @@ ggplot(aes(x=week, y = excess_rentals_pct_change, group=year))+
   )+
   NULL
 plot_2</code></pre>
-<p><img src="/blogs/blog7_files/figure-html/unnamed-chunk-2-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="/Projects1/blog7_files/figure-html/unnamed-chunk-2-1.png" width="1056" style="display: block; margin: auto;" /></p>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://www.instagram.com/ops_orianaway/" class="icon alt fa-instagram" target="_blank"><span class="label">Instagram</span></a></li>
+                
+                    <li><a href="https://github.com/oriana-wei" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/orianawei" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Oriana Wei</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>
