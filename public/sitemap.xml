@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>/blogs/blog10/</loc>
+    <loc>/projects/blog10/</loc>
     <lastmod>2020-09-10T00:00:00+00:00</lastmod>
   </url>
   
@@ -13,28 +13,33 @@
   </url>
   
   <url>
-    <loc>/blogs/blog9/</loc>
+    <loc>/projects/blog9/</loc>
     <lastmod>2020-09-09T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/blogs/blog8/</loc>
+    <loc>/projects/blog8/</loc>
     <lastmod>2020-09-07T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/blogs/blog5/</loc>
+    <loc>/projects/blog5/</loc>
     <lastmod>2020-09-07T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/blogs/blog7/</loc>
+    <loc>/projects/blog7/</loc>
     <lastmod>2020-09-06T00:00:00+00:00</lastmod>
   </url>
   
   <url>
-    <loc>/blogs/blog6/</loc>
+    <loc>/projects/blog6/</loc>
     <lastmod>2020-09-05T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>/blogs/hpair/</loc>
+    <lastmod>2019-02-01T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -58,8 +63,8 @@
   </url>
   
   <url>
-    <loc>/blogs/ipsum/</loc>
-    <lastmod>2017-10-31T21:28:43-05:00</lastmod>
+    <loc>/projects/</loc>
+    <lastmod>2017-10-31T00:00:00+00:00</lastmod>
   </url>
   
   <url>

@@ -2,13 +2,17 @@
 categories:
 - ""
 - ""
-date: "2017-10-31T21:28:43-05:00"
-description: ""
+date: "2019-02-01"
+description: "Harvard Project for Asian and International Relations (Harvard Conference)"
 draft: false
 image: pic10.jpg
 keywords: ""
-slug: ipsum
-title: Ipsum
+slug: HPAIR
+title: HPAIR 2019
 ---
 
-Nullam et orci eu lorem consequat tincidunt vivamus et sagittis magna sed nunc rhoncus condimentum sem. In efficitur ligula tate urna. Maecenas massa sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem consequat tincidunt. Vivamus et sagittis tempus.
+People may not remember your name, you face or your experience but they will always remember how you make them feel.
+
+What makes me love Boston so much? 
+
+The people I met here!

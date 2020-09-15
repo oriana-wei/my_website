@@ -3,7 +3,7 @@ date: "2017-10-31T22:27:21-05:00"
 draft: false
 image: pic22.jpg
 slug: blogs
-title: My Projects
+title: My Blogs
 ---
 
-My recent analytics projects on several hot issues using R.
+My blogs and my lifestyle.

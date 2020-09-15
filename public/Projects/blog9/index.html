@@ -1,0 +1,341 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<meta name="description" content="Come and meet Oriana and her R projects">
+	<meta name="author" content="Oriana Wei">
+	<meta name="generator" content="Hugo 0.74.3" />
+	<title>Trump&#39;s Approval Margins &middot; Portfolio Webste for Oriana Wei</title>
+	<!-- Stylesheets -->
+	
+	<link rel="stylesheet" href="/css/main.css"/>
+	
+	
+
+	
+
+	<!-- Custom Fonts -->
+	<link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+	
+	<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+	<link rel="icon" type="image/x-icon" href="/favicon.ico">
+	
+
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	<script src="js/ie/html5shiv.js"></script>
+	<script src="js/ie/html5shiv.jsrespond.min.js"></script>
+	<![endif]-->
+</head>
+
+    <body>
+
+    <!-- Wrapper -->
+        <div id="wrapper">
+
+            <!-- Header -->
+    <header id="header" class="alt">
+        <a href="/" class="logo"><strong>Oriana</strong> <span></span></a>
+        <nav>
+            <a href="#menu">Menu</a>
+        </nav>
+    </header>
+
+<!-- Menu -->
+    <nav id="menu">
+        <ul class="links">
+            
+                <li><a href="/">Home</a></li>
+            
+                <li><a href="/blogs">Blogs</a></li>
+            
+
+        </ul>
+        <ul class="actions vertical">
+            
+                <li><a href="/Projects" class="button special fit">My Projects</a></li>
+            
+            
+        </ul>
+    </nav>
+
+        <!-- Main -->
+            <div id="main" class="alt">
+
+                
+                    <section id="one">
+                        <div class="inner">
+                            <header class="major">
+                                <h1>Trump&#39;s Approval Margins</h1>
+                            </header>
+                            
+                                <span class="image main"><img src="/img/Projects/pic05.jpg" alt="" /></span>
+                            
+                            
+
+
+<div id="trumps-approval-margins" class="section level1">
+<h1>Trump’s Approval Margins</h1>
+<p>As we saw in class, fivethirtyeight.com has detailed data on <a href="https://projects.fivethirtyeight.com/trump-approval-ratings">all polls that track the president’s approval</a></p>
+<pre class="r"><code># Import approval polls data
+#approval_polllist &lt;- read_csv(here::here(&#39;data&#39;, &#39;approval_polllist.csv&#39;))
+
+# or directly off fivethirtyeight website
+ approval_polllist &lt;- read_csv(&#39;https://projects.fivethirtyeight.com/trump-approval-data/approval_polllist.csv&#39;) 
+
+glimpse(approval_polllist)</code></pre>
+<pre><code>## Rows: 15,475
+## Columns: 22
+## $ president           &lt;chr&gt; &quot;Donald Trump&quot;, &quot;Donald Trump&quot;, &quot;Donald Trump&quot;, &quot;…
+## $ subgroup            &lt;chr&gt; &quot;All polls&quot;, &quot;All polls&quot;, &quot;All polls&quot;, &quot;All polls…
+## $ modeldate           &lt;chr&gt; &quot;9/14/2020&quot;, &quot;9/14/2020&quot;, &quot;9/14/2020&quot;, &quot;9/14/2020…
+## $ startdate           &lt;chr&gt; &quot;1/20/2017&quot;, &quot;1/20/2017&quot;, &quot;1/20/2017&quot;, &quot;1/21/2017…
+## $ enddate             &lt;chr&gt; &quot;1/22/2017&quot;, &quot;1/22/2017&quot;, &quot;1/24/2017&quot;, &quot;1/23/2017…
+## $ pollster            &lt;chr&gt; &quot;Morning Consult&quot;, &quot;Gallup&quot;, &quot;Ipsos&quot;, &quot;Gallup&quot;, &quot;…
+## $ grade               &lt;chr&gt; &quot;B/C&quot;, &quot;B&quot;, &quot;B-&quot;, &quot;B&quot;, &quot;B&quot;, &quot;B+&quot;, &quot;C+&quot;, &quot;B-&quot;, &quot;B-…
+## $ samplesize          &lt;dbl&gt; 1992, 1500, 1632, 1500, 1500, 1190, 1500, 1651, 1…
+## $ population          &lt;chr&gt; &quot;rv&quot;, &quot;a&quot;, &quot;a&quot;, &quot;a&quot;, &quot;a&quot;, &quot;rv&quot;, &quot;lv&quot;, &quot;a&quot;, &quot;a&quot;, &quot;…
+## $ weight              &lt;dbl&gt; 0.680, 0.262, 0.153, 0.243, 0.227, 1.514, 0.200, …
+## $ influence           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
+## $ approve             &lt;dbl&gt; 46.0, 45.0, 42.1, 45.0, 46.0, 36.0, 57.0, 42.3, 4…
+## $ disapprove          &lt;dbl&gt; 37.0, 45.0, 45.2, 46.0, 45.0, 44.0, 43.0, 45.8, 4…
+## $ adjusted_approve    &lt;dbl&gt; 45.3, 45.8, 43.2, 45.8, 46.8, 37.6, 51.6, 43.4, 4…
+## $ adjusted_disapprove &lt;dbl&gt; 38.3, 43.6, 43.8, 44.6, 43.6, 42.7, 44.4, 44.4, 4…
+## $ multiversions       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+## $ tracking            &lt;lgl&gt; NA, TRUE, TRUE, TRUE, TRUE, NA, TRUE, TRUE, TRUE,…
+## $ url                 &lt;chr&gt; &quot;http://static.politico.com/9b/13/82a3baf542ae901…
+## $ poll_id             &lt;dbl&gt; 49249, 49253, 49426, 49262, 49236, 49260, 49266, …
+## $ question_id         &lt;dbl&gt; 77261, 77265, 77599, 77274, 77248, 77272, 77278, …
+## $ createddate         &lt;chr&gt; &quot;1/23/2017&quot;, &quot;1/23/2017&quot;, &quot;3/1/2017&quot;, &quot;1/24/2017&quot;…
+## $ timestamp           &lt;chr&gt; &quot;13:05:13 14 Sep 2020&quot;, &quot;13:05:13 14 Sep 2020&quot;, &quot;…</code></pre>
+<pre class="r"><code># Use `lubridate` to fix dates, as they are given as characters.
+approval_polllist$new_modeldate &lt;- as.Date(approval_polllist$modeldate,
+                         format = &quot;%m/%d/%Y&quot;)
+approval_polllist$new_startdate &lt;- as.Date(approval_polllist$startdate,
+                         format = &quot;%m/%d/%Y&quot;)
+approval_polllist$new_enddate &lt;- as.Date(approval_polllist$enddate,
+                         format = &quot;%m/%d/%Y&quot;)
+approval_polllist$new_createddate &lt;- as.Date(approval_polllist$createddate,
+                         format = &quot;%m/%d/%Y&quot;)
+approval_polllist$new_timestamp &lt;- as.POSIXct(approval_polllist$timestamp,
+                          format = &quot;%H:%M:%S %d %b %Y&quot;)
+approval_polllist</code></pre>
+<pre><code>## # A tibble: 15,475 x 27
+##    president subgroup modeldate startdate enddate pollster grade samplesize
+##    &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt;
+##  1 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Morning… B/C         1992
+##  2 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Gallup   B           1500
+##  3 Donald T… All pol… 9/14/2020 1/20/2017 1/24/2… Ipsos    B-          1632
+##  4 Donald T… All pol… 9/14/2020 1/21/2017 1/23/2… Gallup   B           1500
+##  5 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Gallup   B           1500
+##  6 Donald T… All pol… 9/14/2020 1/20/2017 1/25/2… Quinnip… B+          1190
+##  7 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Rasmuss… C+          1500
+##  8 Donald T… All pol… 9/14/2020 1/21/2017 1/25/2… Ipsos    B-          1651
+##  9 Donald T… All pol… 9/14/2020 1/22/2017 1/26/2… Ipsos    B-          1678
+## 10 Donald T… All pol… 9/14/2020 1/23/2017 1/24/2… Public … B           1043
+## # … with 15,465 more rows, and 19 more variables: population &lt;chr&gt;,
+## #   weight &lt;dbl&gt;, influence &lt;dbl&gt;, approve &lt;dbl&gt;, disapprove &lt;dbl&gt;,
+## #   adjusted_approve &lt;dbl&gt;, adjusted_disapprove &lt;dbl&gt;, multiversions &lt;chr&gt;,
+## #   tracking &lt;lgl&gt;, url &lt;chr&gt;, poll_id &lt;dbl&gt;, question_id &lt;dbl&gt;,
+## #   createddate &lt;chr&gt;, timestamp &lt;chr&gt;, new_modeldate &lt;date&gt;,
+## #   new_startdate &lt;date&gt;, new_enddate &lt;date&gt;, new_createddate &lt;date&gt;,
+## #   new_timestamp &lt;dttm&gt;</code></pre>
+<div id="create-a-plot" class="section level2">
+<h2>Create a plot</h2>
+<p>What I would like you to do is to calculate the average net approval rate (approve- disapprove) for each week since he got into office. I want you plot the net approval, along with its 95% confidence interval. There are various dates given for each poll, please use <code>enddate</code>, i.e., the date the poll ended.</p>
+<pre class="r"><code>#add week number of each enddate
+week_list &lt;- approval_polllist %&gt;%
+mutate(week = lubridate::week(ymd(approval_polllist$new_enddate)))
+week_list</code></pre>
+<pre><code>## # A tibble: 15,475 x 28
+##    president subgroup modeldate startdate enddate pollster grade samplesize
+##    &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt;
+##  1 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Morning… B/C         1992
+##  2 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Gallup   B           1500
+##  3 Donald T… All pol… 9/14/2020 1/20/2017 1/24/2… Ipsos    B-          1632
+##  4 Donald T… All pol… 9/14/2020 1/21/2017 1/23/2… Gallup   B           1500
+##  5 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Gallup   B           1500
+##  6 Donald T… All pol… 9/14/2020 1/20/2017 1/25/2… Quinnip… B+          1190
+##  7 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Rasmuss… C+          1500
+##  8 Donald T… All pol… 9/14/2020 1/21/2017 1/25/2… Ipsos    B-          1651
+##  9 Donald T… All pol… 9/14/2020 1/22/2017 1/26/2… Ipsos    B-          1678
+## 10 Donald T… All pol… 9/14/2020 1/23/2017 1/24/2… Public … B           1043
+## # … with 15,465 more rows, and 20 more variables: population &lt;chr&gt;,
+## #   weight &lt;dbl&gt;, influence &lt;dbl&gt;, approve &lt;dbl&gt;, disapprove &lt;dbl&gt;,
+## #   adjusted_approve &lt;dbl&gt;, adjusted_disapprove &lt;dbl&gt;, multiversions &lt;chr&gt;,
+## #   tracking &lt;lgl&gt;, url &lt;chr&gt;, poll_id &lt;dbl&gt;, question_id &lt;dbl&gt;,
+## #   createddate &lt;chr&gt;, timestamp &lt;chr&gt;, new_modeldate &lt;date&gt;,
+## #   new_startdate &lt;date&gt;, new_enddate &lt;date&gt;, new_createddate &lt;date&gt;,
+## #   new_timestamp &lt;dttm&gt;, week &lt;dbl&gt;</code></pre>
+<pre class="r"><code>#add a column for year+week
+approval_year &lt;- week_list %&gt;% 
+  mutate(year=year(new_enddate),
+         year_week=year(new_enddate)* 100 + week)
+approval_year</code></pre>
+<pre><code>## # A tibble: 15,475 x 30
+##    president subgroup modeldate startdate enddate pollster grade samplesize
+##    &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt;
+##  1 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Morning… B/C         1992
+##  2 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Gallup   B           1500
+##  3 Donald T… All pol… 9/14/2020 1/20/2017 1/24/2… Ipsos    B-          1632
+##  4 Donald T… All pol… 9/14/2020 1/21/2017 1/23/2… Gallup   B           1500
+##  5 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Gallup   B           1500
+##  6 Donald T… All pol… 9/14/2020 1/20/2017 1/25/2… Quinnip… B+          1190
+##  7 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Rasmuss… C+          1500
+##  8 Donald T… All pol… 9/14/2020 1/21/2017 1/25/2… Ipsos    B-          1651
+##  9 Donald T… All pol… 9/14/2020 1/22/2017 1/26/2… Ipsos    B-          1678
+## 10 Donald T… All pol… 9/14/2020 1/23/2017 1/24/2… Public … B           1043
+## # … with 15,465 more rows, and 22 more variables: population &lt;chr&gt;,
+## #   weight &lt;dbl&gt;, influence &lt;dbl&gt;, approve &lt;dbl&gt;, disapprove &lt;dbl&gt;,
+## #   adjusted_approve &lt;dbl&gt;, adjusted_disapprove &lt;dbl&gt;, multiversions &lt;chr&gt;,
+## #   tracking &lt;lgl&gt;, url &lt;chr&gt;, poll_id &lt;dbl&gt;, question_id &lt;dbl&gt;,
+## #   createddate &lt;chr&gt;, timestamp &lt;chr&gt;, new_modeldate &lt;date&gt;,
+## #   new_startdate &lt;date&gt;, new_enddate &lt;date&gt;, new_createddate &lt;date&gt;,
+## #   new_timestamp &lt;dttm&gt;, week &lt;dbl&gt;, year &lt;dbl&gt;, year_week &lt;dbl&gt;</code></pre>
+<pre class="r"><code>#calculate the average net approval rate and CI of each week 
+week_mean &lt;- approval_year %&gt;% 
+  group_by(year_week) %&gt;% 
+  mutate(approval_mean=mean(approve-disapprove), 
+         sd_approval=sd(approve-disapprove),
+         count=n(),
+         t_critical=qt(0.975, count-1),
+         se_approval=sd(approve-disapprove)/sqrt(count),
+            margin_of_error=t_critical*se_approval,
+            approval_low=approval_mean-margin_of_error,
+            approval_high=approval_mean+margin_of_error)
+week_mean</code></pre>
+<pre><code>## # A tibble: 15,475 x 38
+## # Groups:   year_week [193]
+##    president subgroup modeldate startdate enddate pollster grade samplesize
+##    &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt;
+##  1 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Morning… B/C         1992
+##  2 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Gallup   B           1500
+##  3 Donald T… All pol… 9/14/2020 1/20/2017 1/24/2… Ipsos    B-          1632
+##  4 Donald T… All pol… 9/14/2020 1/21/2017 1/23/2… Gallup   B           1500
+##  5 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Gallup   B           1500
+##  6 Donald T… All pol… 9/14/2020 1/20/2017 1/25/2… Quinnip… B+          1190
+##  7 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Rasmuss… C+          1500
+##  8 Donald T… All pol… 9/14/2020 1/21/2017 1/25/2… Ipsos    B-          1651
+##  9 Donald T… All pol… 9/14/2020 1/22/2017 1/26/2… Ipsos    B-          1678
+## 10 Donald T… All pol… 9/14/2020 1/23/2017 1/24/2… Public … B           1043
+## # … with 15,465 more rows, and 30 more variables: population &lt;chr&gt;,
+## #   weight &lt;dbl&gt;, influence &lt;dbl&gt;, approve &lt;dbl&gt;, disapprove &lt;dbl&gt;,
+## #   adjusted_approve &lt;dbl&gt;, adjusted_disapprove &lt;dbl&gt;, multiversions &lt;chr&gt;,
+## #   tracking &lt;lgl&gt;, url &lt;chr&gt;, poll_id &lt;dbl&gt;, question_id &lt;dbl&gt;,
+## #   createddate &lt;chr&gt;, timestamp &lt;chr&gt;, new_modeldate &lt;date&gt;,
+## #   new_startdate &lt;date&gt;, new_enddate &lt;date&gt;, new_createddate &lt;date&gt;,
+## #   new_timestamp &lt;dttm&gt;, week &lt;dbl&gt;, year &lt;dbl&gt;, year_week &lt;dbl&gt;,
+## #   approval_mean &lt;dbl&gt;, sd_approval &lt;dbl&gt;, count &lt;int&gt;, t_critical &lt;dbl&gt;,
+## #   se_approval &lt;dbl&gt;, margin_of_error &lt;dbl&gt;, approval_low &lt;dbl&gt;,
+## #   approval_high &lt;dbl&gt;</code></pre>
+<pre class="r"><code>#finalize the data set showing on the plot
+final_plot &lt;- week_mean %&gt;%
+  select(year,
+         week,
+         approval_mean,
+         approval_high,
+         approval_low )
+final_plot</code></pre>
+<pre><code>## # A tibble: 15,475 x 6
+## # Groups:   year_week [193]
+##    year_week  year  week approval_mean approval_high approval_low
+##        &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
+##  1    201704  2017     4         0.943          3.01        -1.12
+##  2    201704  2017     4         0.943          3.01        -1.12
+##  3    201704  2017     4         0.943          3.01        -1.12
+##  4    201704  2017     4         0.943          3.01        -1.12
+##  5    201704  2017     4         0.943          3.01        -1.12
+##  6    201704  2017     4         0.943          3.01        -1.12
+##  7    201704  2017     4         0.943          3.01        -1.12
+##  8    201704  2017     4         0.943          3.01        -1.12
+##  9    201704  2017     4         0.943          3.01        -1.12
+## 10    201704  2017     4         0.943          3.01        -1.12
+## # … with 15,465 more rows</code></pre>
+<pre class="r"><code>#plotting
+library(reshape2)
+#show_plot &lt;- melt(final_plot,id.vars = &quot;week&quot;)
+
+ggplot(final_plot, aes(x = week, y = approval_mean, color = as.factor(year))) +
+  geom_point(size = 1) +
+  geom_line()+ 
+  geom_ribbon(aes(ymin = approval_low, ymax = approval_high), alpha = 0.08)+
+  facet_wrap(~year)+
+  labs(title = &quot;Estimating Net Approval (approve-disapprove) for Donald Trump&quot;, 
+       subtitle = &quot;Weekly average of all polls&quot;, 
+       x = &quot;Week of the year&quot;, 
+       y = &quot;Average Net Approval(%)&quot;) +
+#change xy ratio and extend x
+    coord_fixed(ratio=1/2) +
+    scale_y_continuous(breaks=seq(-20, 7.5, 2.5)) +
+    scale_x_continuous(breaks=seq(0, 52, 13)) +
+    theme_bw() +
+  theme(legend.position = &quot;none&quot;) +
+    geom_hline(aes(yintercept = 0), colour = &quot;orange&quot;) +
+  #scale_x_continous(breaks=seq(-20,7.5,2.5)) +
+  #scale_color_manual( values = c(&quot;blue&quot;,&quot;yellow&quot;,&quot;red&quot;,&quot;green&quot;))+
+  NULL</code></pre>
+<p><img src="/blogs/blog9_files/figure-html/unnamed-chunk-4-1.png" width="648" style="display: block; margin: auto;" /></p>
+</div>
+<div id="compare-confidence-intervals" class="section level2">
+<h2>Compare Confidence Intervals</h2>
+<p>Compare the confidence intervals for <code>week 15</code> (6-12 April 2020) and <code>week 34</code> (17-23 August 2020). Can you explain what’s going on? One paragraph would be enough.</p>
+</div>
+</div>
+
+                        </div>
+                    </section>
+            <!-- Disqus Inject -->
+                
+            </div>
+            
+        <!-- Footer -->
+            
+                <!-- Footer -->
+    <footer id="footer">
+        <div class="inner">
+            <ul class="icons">
+                
+                    <li><a href="https://www.instagram.com/ops_orianaway/" class="icon alt fa-instagram" target="_blank"><span class="label">Instagram</span></a></li>
+                
+                    <li><a href="https://github.com/oriana-wei" class="icon alt fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+                
+                    <li><a href="https://www.linkedin.com/in/orianawei" class="icon alt fa-linkedin" target="_blank"><span class="label">LinkedIn</span></a></li>
+                
+            </ul>
+            <ul class="copyright">
+                <li>&copy; Oriana Wei</li>
+                
+                <li>Design:  <a href="https://www.html5up.net">HTML5 UP</a></li>
+                
+            </ul>
+        </div>
+    </footer>
+
+            
+        </div>
+
+    <!-- Scripts -->
+        <!-- Scripts -->
+    <!-- jQuery -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.scrolly.min.js"></script>
+    <script src="/js/jquery.scrollex.min.js"></script>
+    <script src="/js/skel.min.js"></script>
+    <script src="/js/util.js"></script>
+
+    
+
+    <!-- Main JS -->
+    <script src="/js/main.js"></script>
+
+    
+
+    
+
+    </body>
+</html>

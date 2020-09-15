@@ -1,7 +1,7 @@
 # Site settings
 baseURL = "https://oriana-jiaxinwei.netlify.app/"
 languageCode = "en-us"
-title = "Portfolio website for Oriana Wei"
+title = "Portfolio Webste for Oriana Wei"
 theme = "forty"
 
 # Enter your tracking code to enable Google Analytics
@@ -51,9 +51,9 @@ disqusShortname = ""
 #      name = "Blogs"
 #      url = "blogs"
 
-#    [[params.navigation.links]]
-#      name = "Generic Blog"
-#      url = "blogs/ipsum"
+     [[params.navigation.links]]
+       name = "Blogs"
+       url = "blogs"
 
 #    [[params.navigation.links]]
 #      name = "Elements"
@@ -69,7 +69,7 @@ disqusShortname = ""
     # Button Style 1
     [[params.navigation.button1]]
       name = "My Projects"
-      url = "blogs"
+      url = "Projects"
 
     # Button Style 2
 #    [[params.navigation.button2]]
@@ -82,9 +82,8 @@ disqusShortname = ""
     # To change the background image on the homepage banner, replace 'banner.jpg' in
     # the 'static/img' folder.
     title = "Hi, this is Oriana"
-    subtitle = "Portfolio Website for Oriana Wei"
+    subtitle = "Portfolio and lifestyle of Oriana Wei"
     buttonText = "Get Started"
-
 
   # Tiles Section
   [params.tiles]
@@ -95,37 +94,37 @@ disqusShortname = ""
       title = "Mask Acceptance"
       subtitle = "Is mask acceptance high in the US? NYT Survey analysis"
       image = "pic07.jpg"
-      url = "blogs/blog5"
+      url = "Projects/blog5"
 
     [[params.tiles.showcase]]
       title = "COVID-19"
       subtitle = "FCDC COVID-19 Public Use Data"
       image = "pic02.jpg"
-      url = "blogs/blog6"
+      url = "Projects/blog6"
 
     [[params.tiles.showcase]]
       title = "Bike Sharing"
       subtitle = "Excess rentals in TfL bike sharing"
       image = "pic03.jpg"
-      url = "blogs/blog7"
+      url = "Projects/blog7"
 
     [[params.tiles.showcase]]
       title = "Beer Consuming"
       subtitle = "Where Do People Drink The Most Beer, Wine And Spirits?"
       image = "pic04.jpg"
-      url = "blogs/blog8"
+      url = "Projects/blog8"
 
     [[params.tiles.showcase]]
       title = "Trump's Approval Margins"
       subtitle = "Vote for Trump?"
       image = "pic05.jpg"
-      url = "blogs/blog9"
+      url = "Projects/blog9"
 
     [[params.tiles.showcase]]
       title = "Climate Change"
       subtitle = "Climate change and temperature anomalies "
       image = "pic06.jpg"
-      url = "blogs/blog10"
+      url = "Projects/blog10"
     # You can make more showcases by copy and pasting the code above
 
 #  [params.blog]
