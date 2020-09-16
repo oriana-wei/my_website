@@ -7,9 +7,8 @@ description: Climate change and temperature anomalies
 image: pic06.jpg
 keywords: ""
 slug: blog10
-title: Climate Change
+title: Climate Change and Temperature Anomalies Analysis
 ---
-
 
 ```{r, setup, include=FALSE}
 knitr::opts_chunk$set(
@@ -43,45 +42,40 @@ library(kableExtra)
 ```
 
 
-
-
-# Climate change and temperature anomalies 
-
-
 To study climate change, we have used data on the *Combined Land-Surface Air and Sea-Surface Water Temperature Anomalies* in the Northern Hemisphere from [NASA's Goddard Institute for Space Studies](https://data.giss.nasa.gov/gistemp).
 
 The base period to calculate changes is taken as 1951-1980.While loading the data, `skip` and `na` are used to remove the first row and missing values respectively:
-
 ```{r weather_data, cache=TRUE}
-
 weather <- 
   read_csv("https://data.giss.nasa.gov/gistemp/tabledata_v3/NH.Ts+dSST.csv", 
            skip = 1, 
            na = "***")
-
 ```
 
+Let's have a look on the dataset we have first:
+```{r}
+glimpse(weather)
+```
 
 We've converted the dataframe from wide to 'long' format and defined variables month as `month`, and the temperature deviation values as `delta`.
-
 ```{r tidyweather}
-glimpse(weather)
-
-## convert df from wide to long, creating a "Month" and a "Delta" variable 
-
-tidyweather <- weather %>% select(1:13) %>% pivot_longer(cols = 2:13, names_to = "month", values_to = "delta")
-tidyweather %>% kbl() %>% kable_styling()
+# convert df from wide to long, creating a "Month" and a "Delta" variable 
+tidyweather <- weather %>% 
+  select(1:13) %>% 
+  pivot_longer(cols = 2:13, names_to = "month", values_to = "delta")
+tidyweather %>% 
+  kbl() %>% 
+  kable_styling()
 ```
 
 Let us plot the data using a time-series scatter plot, and add a trendline. To do that, we first need to create a new variable called `date` in order to ensure that the `delta` values are plot chronologically.
-
-```{r scatter_plot}
-
+```{r scatter_plot,fig.width=22, fig.height= 20}
 tidyweather <- tidyweather %>%
   mutate(date = ymd(paste(as.character(Year), month, "1")),
          month = month(date),
          year = year(date))
 
+#plot the graph
 ggplot(tidyweather, aes(x=date, y = delta, colour = date)) +
   geom_point() +
   geom_smooth(color="white") + 
@@ -97,8 +91,7 @@ ggplot(tidyweather, aes(x=date, y = delta, colour = date)) +
 ```
 
 On analysing the temperature difference through different months, we find that the effects of increasing temperature appear to be homogeneous throughout different months. 
-
-```{r facet_wrap}
+```{r facet_wrap,fig.width=22, fig.height= 20}
 ## add to the title/sub , can i thin the smoothing line? , make the theme prettier (no grey months)
 ggplot(tidyweather, aes(x=date, y = delta, colour = date))+
   geom_point()+
@@ -115,10 +108,7 @@ ggplot(tidyweather, aes(x=date, y = delta, colour = date))+
 ```
 
 Here, the years are divided into intervals to help study the data better:
-
-
 ```{r intervals}
-
 comparison <- tidyweather %>% 
   filter(year>= 1881) %>%     #remove years prior to 1881
   #create new variable 'interval', and assign values based on criteria below:
@@ -132,10 +122,9 @@ comparison <- tidyweather %>%
 
 ```
 
-
 Now that we have the `interval` variable, we can create a density plot to study the distribution of monthly deviations (`delta`), grouped by the different time periods we are interested in. Set `fill` to `interval` to group and colour the data by different time periods.
 
-```{r density_plot, eval=FALSE}
+```{r density_plot, eval=FALSE,fig.width=22, fig.height= 20}
 ## fix the colors 
 ggplot(comparison, aes(x=delta, fill=interval, colour = interval))+
   
@@ -158,8 +147,7 @@ ggplot(comparison, aes(x=delta, fill=interval, colour = interval))+
 ```
 
 So far, we have been working with monthly anomalies. However, we might be interested in average annual anomalies. We can do this by using `group_by()` and `summarise()`, followed by a scatter plot to display the result. 
-
-```{r averaging, eval=FALSE}
+```{r averaging, eval=FALSE,fig.width=22, fig.height= 20}
 
 #creating yearly averages
 average_annual_anomaly <- tidyweather %>% 
@@ -192,18 +180,13 @@ ggplot(average_annual_anomaly, aes(x=year, y= annual_average_anomaly, colour = y
   theme(legend.position = "none", plot.title = element_text(face = "bold"), axis.text=element_text(size=12),
         axis.title=element_text(size=14,face="bold"))
 ## make more clear 
-
 ```
-
-
-## Confidence Interval for `delta`
 
 [NASA points out on their website](https://earthobservatory.nasa.gov/world-of-change/decadaltemp.php) that 
 
 > A one-degree global change is significant because it takes a vast amount of heat to warm all the oceans, atmosphere, and land by that much. In the past, a one- to two-degree drop was all it took to plunge the Earth into the Little Ice Age.
 
 We've constructed a confidence interval for the average annual delta since 2011, both using a formula and using a bootstrap simulation with the `infer` package:
-
 ```{r, calculate_CI_using_formula}
 library (kableExtra)
 formula_ci <- comparison %>% 
@@ -224,8 +207,8 @@ formula_ci <- comparison %>%
 formula_ci %>% kbl() %>% kable_styling()
 ```
 
-
-```{r, calculate_CI_using_bootstrap, fig.length="100%"}
+Here comes our visulisation:
+```{r, calculate_CI_using_bootstrap, fig.length="100%",fig.width=22, fig.height= 20}
 
 # use the infer package to construct a 95% CI for delta
 library(infer)
@@ -277,7 +260,5 @@ ggplot(formula_ci, aes(y = average_annual_delta, x = time_period, colour = avera
 
 
 ```
-
-> What is the data showing us? Please type your answer after (and outside!) this blockquote. You have to explain what you have done, and the interpretation of the result. One paragraph max, please! 
 
 The above data visualization focuses specifically on temperature anomalies, which is the difference from the average temperature. A positive anomaly indicates a warmer than expected value, while a negative anomaly indicates a cooler value. The scatterplots show temperature anomalies over time, and all show that the temperature anomalies have been increasing steadily over the past century. Further, we can see in the Average Yearly Temp Anomaly graph that the anomalies are increasing at an increasing rate. Our confidence interval for the 2011-present period confirms our previous thoughts, since there is a 95% change that the true average annual anomaly falls between .917 and 1.02, which is a positive anomaly. 

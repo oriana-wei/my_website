@@ -8,7 +8,7 @@
 	<meta name="description" content="Come and meet Oriana and her R projects">
 	<meta name="author" content="Oriana Wei">
 	<meta name="generator" content="Hugo 0.74.3" />
-	<title>Climate Change &middot; Portfolio Webste for Oriana Wei</title>
+	<title>Climate Change and Temperature Anomalies Analysis &middot; Portfolio Webste for Oriana Wei</title>
 	<!-- Stylesheets -->
 	
 	<link rel="stylesheet" href="/css/main.css"/>
@@ -71,7 +71,7 @@
                     <section id="one">
                         <div class="inner">
                             <header class="major">
-                                <h1>Climate Change</h1>
+                                <h1>Climate Change and Temperature Anomalies Analysis</h1>
                             </header>
                             
                                 <span class="image main"><img src="/img/Projects1/pic06.jpg" alt="" /></span>
@@ -81,15 +81,13 @@
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
 
-<div id="climate-change-and-temperature-anomalies" class="section level1">
-<h1>Climate change and temperature anomalies</h1>
 <p>To study climate change, we have used data on the <em>Combined Land-Surface Air and Sea-Surface Water Temperature Anomalies</em> in the Northern Hemisphere from <a href="https://data.giss.nasa.gov/gistemp">NASA’s Goddard Institute for Space Studies</a>.</p>
 <p>The base period to calculate changes is taken as 1951-1980.While loading the data, <code>skip</code> and <code>na</code> are used to remove the first row and missing values respectively:</p>
 <pre class="r"><code>weather &lt;- 
   read_csv(&quot;https://data.giss.nasa.gov/gistemp/tabledata_v3/NH.Ts+dSST.csv&quot;, 
            skip = 1, 
            na = &quot;***&quot;)</code></pre>
-<p>We’ve converted the dataframe from wide to ‘long’ format and defined variables month as <code>month</code>, and the temperature deviation values as <code>delta</code>.</p>
+<p>Let’s have a look on the dataset we have first:</p>
 <pre class="r"><code>glimpse(weather)</code></pre>
 <pre><code>## Rows: 140
 ## Columns: 19
@@ -112,10 +110,14 @@
 ## $ MAM   &lt;dbl&gt; -0.24, -0.02, -0.22, -0.25, -0.56, -0.43, -0.42, -0.35, -0.33, …
 ## $ JJA   &lt;dbl&gt; -0.23, -0.15, -0.30, -0.20, -0.50, -0.44, -0.37, -0.32, -0.06, …
 ## $ SON   &lt;dbl&gt; -0.32, -0.35, -0.34, -0.32, -0.44, -0.30, -0.37, -0.25, -0.04, …</code></pre>
-<pre class="r"><code>## convert df from wide to long, creating a &quot;Month&quot; and a &quot;Delta&quot; variable 
-
-tidyweather &lt;- weather %&gt;% select(1:13) %&gt;% pivot_longer(cols = 2:13, names_to = &quot;month&quot;, values_to = &quot;delta&quot;)
-tidyweather %&gt;% kbl() %&gt;% kable_styling()</code></pre>
+<p>We’ve converted the dataframe from wide to ‘long’ format and defined variables month as <code>month</code>, and the temperature deviation values as <code>delta</code>.</p>
+<pre class="r"><code># convert df from wide to long, creating a &quot;Month&quot; and a &quot;Delta&quot; variable 
+tidyweather &lt;- weather %&gt;% 
+  select(1:13) %&gt;% 
+  pivot_longer(cols = 2:13, names_to = &quot;month&quot;, values_to = &quot;delta&quot;)
+tidyweather %&gt;% 
+  kbl() %&gt;% 
+  kable_styling()</code></pre>
 <table class="table" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -18619,6 +18621,7 @@ NA
          month = month(date),
          year = year(date))
 
+#plot the graph
 ggplot(tidyweather, aes(x=date, y = delta, colour = date)) +
   geom_point() +
   geom_smooth(color=&quot;white&quot;) + 
@@ -18630,7 +18633,7 @@ ggplot(tidyweather, aes(x=date, y = delta, colour = date)) +
   subtitle = &quot;Combined land-surface air and sea-surface water temperature anomalies in the northern \nhemisphere have shifted from negative to positive in the last 100 years&quot;, x = &quot;Year&quot;, y = &quot;Delta&quot;, caption = &quot;Source: NASA&#39;s Goddard Institute for Space Studies&quot;) +
   theme(legend.position = &quot;none&quot;, plot.title = element_text(face = &quot;bold&quot;), axis.text=element_text(size=12),
         axis.title=element_text(size=14,face=&quot;bold&quot;))</code></pre>
-<p><img src="/blogs/blog10_files/figure-html/scatter_plot-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="/Projects1/blog10_files/figure-html/scatter_plot-1.png" width="2112" style="display: block; margin: auto;" /></p>
 <p>On analysing the temperature difference through different months, we find that the effects of increasing temperature appear to be homogeneous throughout different months.</p>
 <pre class="r"><code>## add to the title/sub , can i thin the smoothing line? , make the theme prettier (no grey months)
 ggplot(tidyweather, aes(x=date, y = delta, colour = date))+
@@ -18644,7 +18647,7 @@ ggplot(tidyweather, aes(x=date, y = delta, colour = date))+
   facet_wrap(~month) + 
   theme(legend.position = &quot;none&quot;, plot.title = element_text(face = &quot;bold&quot;), axis.text=element_text(size=12),
         axis.title=element_text(size=14,face=&quot;bold&quot;))</code></pre>
-<p><img src="/blogs/blog10_files/figure-html/facet_wrap-1.png" width="648" style="display: block; margin: auto;" /></p>
+<p><img src="/Projects1/blog10_files/figure-html/facet_wrap-1.png" width="2112" style="display: block; margin: auto;" /></p>
 <p>Here, the years are divided into intervals to help study the data better:</p>
 <pre class="r"><code>comparison &lt;- tidyweather %&gt;% 
   filter(year&gt;= 1881) %&gt;%     #remove years prior to 1881
@@ -18707,8 +18710,6 @@ ggplot(average_annual_anomaly, aes(x=year, y= annual_average_anomaly, colour = y
   theme(legend.position = &quot;none&quot;, plot.title = element_text(face = &quot;bold&quot;), axis.text=element_text(size=12),
         axis.title=element_text(size=14,face=&quot;bold&quot;))
 ## make more clear </code></pre>
-<div id="confidence-interval-for-delta" class="section level2">
-<h2>Confidence Interval for <code>delta</code></h2>
 <p><a href="https://earthobservatory.nasa.gov/world-of-change/decadaltemp.php">NASA points out on their website</a> that</p>
 <blockquote>
 <p>A one-degree global change is significant because it takes a vast amount of heat to warm all the oceans, atmosphere, and land by that much. In the past, a one- to two-degree drop was all it took to plunge the Earth into the Little Ice Age.</p>
@@ -18795,6 +18796,7 @@ time_period
 </tr>
 </tbody>
 </table>
+<p>Here comes our visulisation:</p>
 <pre class="r"><code># use the infer package to construct a 95% CI for delta
 library(infer)
 
@@ -18862,13 +18864,8 @@ ggplot(formula_ci, aes(y = average_annual_delta, x = time_period, colour = avera
         axis.text=element_text(size=12),
         axis.title=element_text(size=14,face=&quot;bold&quot;))+
   NULL</code></pre>
-<p><img src="/blogs/blog10_files/figure-html/calculate_CI_using_bootstrap-1.png" width="648" style="display: block; margin: auto;" /></p>
-<blockquote>
-<p>What is the data showing us? Please type your answer after (and outside!) this blockquote. You have to explain what you have done, and the interpretation of the result. One paragraph max, please!</p>
-</blockquote>
+<p><img src="/Projects1/blog10_files/figure-html/calculate_CI_using_bootstrap-1.png" width="2112" style="display: block; margin: auto;" /></p>
 <p>The above data visualization focuses specifically on temperature anomalies, which is the difference from the average temperature. A positive anomaly indicates a warmer than expected value, while a negative anomaly indicates a cooler value. The scatterplots show temperature anomalies over time, and all show that the temperature anomalies have been increasing steadily over the past century. Further, we can see in the Average Yearly Temp Anomaly graph that the anomalies are increasing at an increasing rate. Our confidence interval for the 2011-present period confirms our previous thoughts, since there is a 95% change that the true average annual anomaly falls between .917 and 1.02, which is a positive anomaly.</p>
-</div>
-</div>
 
                         </div>
                     </section>
