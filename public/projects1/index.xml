@@ -34,13 +34,14 @@ glimpse(approval_polllist) ## Rows: 15,487 ## Columns: 22 ## $ president &amp;lt
     </item>
     
     <item>
-      <title>Beer Consuming</title>
+      <title>Beer Consuming Analysis</title>
       <link>/projects1/blog8/</link>
       <pubDate>Mon, 07 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>/projects1/blog8/</guid>
-      <description>knitr::opts_chunk$set( message = FALSE, warning = FALSE, tidy=FALSE, # display code as typed size=&amp;quot;small&amp;quot;) # slightly smaller font for code options(digits = 3) # default figure size knitr::opts_chunk$set( fig.width=6.75, fig.height=6.75, fig.align = &amp;quot;center&amp;quot; ) The aim of the first task is to study the data taken from fivethiryeight.com about the alcohol consumption in different countries.
-library(fivethirtyeight) data(drinks) Let’s first have a quick look at the variables present in this data:</description>
+      <description>knitr::opts_chunk$set( message = FALSE, warning = FALSE, tidy=FALSE, # display code as typed size=&amp;quot;small&amp;quot;) # slightly smaller font for code options(digits = 3) # default figure size knitr::opts_chunk$set( fig.width=6.75, fig.height=6.75, fig.align = &amp;quot;center&amp;quot; ) We take data from fivethiryeight.com to analyse the alcohol consumption in different countries.
+library(fivethirtyeight) data(drinks) Let’s first have a quick look at the variables present in this data:
+glimpse(drinks) ## Rows: 193 ## Columns: 5 ## $ country &amp;lt;chr&amp;gt; &amp;quot;Afghanistan&amp;quot;, &amp;quot;Albania&amp;quot;, &amp;quot;Algeria&amp;quot;, &amp;quot;An… ## $ beer_servings &amp;lt;int&amp;gt; 0, 89, 25, 245, 217, 102, 193, 21, 261, … ## $ spirit_servings &amp;lt;int&amp;gt; 0, 132, 0, 138, 57, 128, 25, 179, 72, 75… ## $ wine_servings &amp;lt;int&amp;gt; 0, 54, 14, 312, 45, 45, 221, 11, 212, 19… ## $ total_litres_of_pure_alcohol &amp;lt;dbl&amp;gt; 0.</description>
     </item>
     
     <item>

@@ -8,7 +8,7 @@ draft: false
 image: pic04.jpg
 keywords: ""
 slug: blog8
-title: Beer Consuming
+title: Beer Consuming Analysis
 ---
  
 ```{r, setup}
@@ -41,19 +41,20 @@ library(ggrepel)
 library(kableExtra)
 ```
 
-
-The aim of the first task is to study the data taken from [fivethiryeight.com](https://fivethirtyeight.com/features/dear-mona-followup-where-do-people-drink-the-most-beer-wine-and-spirits/) about the alcohol consumption in different countries.
- 
+We take data from [fivethiryeight.com](https://fivethirtyeight.com/features/dear-mona-followup-where-do-people-drink-the-most-beer-wine-and-spirits/) to analyse the alcohol consumption in different countries.
 ```{r, load_alcohol_data}
 library(fivethirtyeight)
 data(drinks)
 ```
+
 Let's first have a quick look at the variables present in this data:
 ```{r glimpse_skim_data}
 glimpse(drinks)
 ```
  
 To begin with we can plot the top 25 countries in consumption of beer, wine and spirits respectively as shown below:
+
+1. Beer
 ```{r beer_plot}
 beer_drinks <- drinks %>%
   arrange(desc(beer_servings))
@@ -64,7 +65,7 @@ ggplot(top_25,aes(x=beer_servings, y=reorder(country,beer_servings)))+
   theme_bw()+
   NULL
 ```
- 
+2. Wine
 ```{r wine_plot}
 wine_drinks <- drinks %>%
   arrange(desc(wine_servings))
@@ -75,7 +76,7 @@ ggplot(top_25,aes(x=wine_servings, y=reorder(country,wine_servings)))+
   theme_bw()+
   NULL
 ```
- 
+3. Spirit
 ```{r spirit_plot}
 spirit_drinks <- drinks %>%
   arrange(desc(spirit_servings))
@@ -87,5 +88,4 @@ ggplot(top_25,aes(x=spirit_servings, y=reorder(country,spirit_servings)))+
   NULL
 ```
 When looking at the alcohol data, a few different things stood out. Firstly, it appears that there is not a huge amount of overlap for the top 25 countries for beer, wine and spirits, meaning that if a country was in the top 25 for one, it is unlikely that they would be in the top 25 of another. This is a bit surprising because one would think that countries that consume a large amount of one type of alcohol would also consume large amounts of other types. However, this was not the case. It could be argued that countries in the top 25 for one type may not be in the top 25 of others since they have better access and affordability to certain types. For example, Czech Republic is one of the top countries for beer consumption, but is not in the top 25 of wine or spirits. Czech Republic is known for its beer consumption, and that “beer is cheaper than water”, so it is unlikely that citizens there would drink large amounts of anything else when beer is so cheap and available. Additionally, there was not a single country that was in the top 25 for all 3 types of alcohol. Six countries (Belgium, Germany, Ireland, Romania, Slovenia, and the Netherlands) were in the top 25 for beer and wine. Poland, Lithuania, and Latvia were in the top 25 for beer and spirits. All countries that were in two different top 25 groups were European, which could mean that European countries consume more alcohol, and more of a diverse selection, than other continents.
-Subsidised products for some countries, hence appearing in the top 25.
  
