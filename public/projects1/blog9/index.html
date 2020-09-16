@@ -8,7 +8,7 @@
 	<meta name="description" content="Come and meet Oriana and her R projects">
 	<meta name="author" content="Oriana Wei">
 	<meta name="generator" content="Hugo 0.74.3" />
-	<title>Trump&#39;s Approval Margins &middot; Portfolio Webste for Oriana Wei</title>
+	<title>Trump&#39;s Approval Margins Analysis &middot; Portfolio Webste for Oriana Wei</title>
 	<!-- Stylesheets -->
 	
 	<link rel="stylesheet" href="/css/main.css"/>
@@ -71,7 +71,7 @@
                     <section id="one">
                         <div class="inner">
                             <header class="major">
-                                <h1>Trump&#39;s Approval Margins</h1>
+                                <h1>Trump&#39;s Approval Margins Analysis</h1>
                             </header>
                             
                                 <span class="image main"><img src="/img/Projects1/pic05.jpg" alt="" /></span>
@@ -79,38 +79,36 @@
                             
 
 
-<p>As we saw in class, fivethirtyeight.com has detailed data on <a href="https://projects.fivethirtyeight.com/trump-approval-ratings">all polls that track the president’s approval</a></p>
-<pre class="r"><code># Import approval polls data
-#approval_polllist &lt;- read_csv(here::here(&#39;data&#39;, &#39;approval_polllist.csv&#39;))
-
-# or directly off fivethirtyeight website
- approval_polllist &lt;- read_csv(&#39;https://projects.fivethirtyeight.com/trump-approval-data/approval_polllist.csv&#39;) 
-
-glimpse(approval_polllist)</code></pre>
-<pre><code>## Rows: 15,480
+<p>We got detailed data from fivethirtyeight.com <a href="https://projects.fivethirtyeight.com/trump-approval-ratings">all polls that track the president’s approval</a> to analyse Trump’s approval margins.</p>
+<pre class="r"><code># or directly off fivethirtyeight website
+ approval_polllist &lt;- read_csv(&#39;https://projects.fivethirtyeight.com/trump-approval-data/approval_polllist.csv&#39;) </code></pre>
+<p>Let’s have a look on the dataset first:</p>
+<pre class="r"><code>glimpse(approval_polllist)</code></pre>
+<pre><code>## Rows: 15,487
 ## Columns: 22
 ## $ president           &lt;chr&gt; &quot;Donald Trump&quot;, &quot;Donald Trump&quot;, &quot;Donald Trump&quot;, &quot;…
 ## $ subgroup            &lt;chr&gt; &quot;All polls&quot;, &quot;All polls&quot;, &quot;All polls&quot;, &quot;All polls…
-## $ modeldate           &lt;chr&gt; &quot;9/14/2020&quot;, &quot;9/14/2020&quot;, &quot;9/14/2020&quot;, &quot;9/14/2020…
-## $ startdate           &lt;chr&gt; &quot;1/20/2017&quot;, &quot;1/20/2017&quot;, &quot;1/20/2017&quot;, &quot;1/21/2017…
-## $ enddate             &lt;chr&gt; &quot;1/22/2017&quot;, &quot;1/22/2017&quot;, &quot;1/24/2017&quot;, &quot;1/23/2017…
-## $ pollster            &lt;chr&gt; &quot;Morning Consult&quot;, &quot;Gallup&quot;, &quot;Ipsos&quot;, &quot;Gallup&quot;, &quot;…
-## $ grade               &lt;chr&gt; &quot;B/C&quot;, &quot;B&quot;, &quot;B-&quot;, &quot;B&quot;, &quot;B+&quot;, &quot;B-&quot;, &quot;C+&quot;, &quot;B&quot;, &quot;B&quot;…
-## $ samplesize          &lt;dbl&gt; 1992, 1500, 1632, 1500, 1190, 1651, 1500, 1500, 1…
-## $ population          &lt;chr&gt; &quot;rv&quot;, &quot;a&quot;, &quot;a&quot;, &quot;a&quot;, &quot;rv&quot;, &quot;a&quot;, &quot;lv&quot;, &quot;a&quot;, &quot;a&quot;, &quot;…
-## $ weight              &lt;dbl&gt; 0.680, 0.262, 0.153, 0.243, 1.514, 0.142, 0.200, …
+## $ modeldate           &lt;chr&gt; &quot;9/15/2020&quot;, &quot;9/15/2020&quot;, &quot;9/15/2020&quot;, &quot;9/15/2020…
+## $ startdate           &lt;chr&gt; &quot;1/20/2017&quot;, &quot;1/20/2017&quot;, &quot;1/21/2017&quot;, &quot;1/20/2017…
+## $ enddate             &lt;chr&gt; &quot;1/22/2017&quot;, &quot;1/22/2017&quot;, &quot;1/23/2017&quot;, &quot;1/24/2017…
+## $ pollster            &lt;chr&gt; &quot;Gallup&quot;, &quot;Morning Consult&quot;, &quot;Gallup&quot;, &quot;Ipsos&quot;, &quot;…
+## $ grade               &lt;chr&gt; &quot;B&quot;, &quot;B/C&quot;, &quot;B&quot;, &quot;B-&quot;, &quot;B+&quot;, &quot;B&quot;, &quot;C+&quot;, &quot;B-&quot;, &quot;B&quot;…
+## $ samplesize          &lt;dbl&gt; 1500, 1992, 1500, 1632, 1190, 1500, 1500, 1651, 1…
+## $ population          &lt;chr&gt; &quot;a&quot;, &quot;rv&quot;, &quot;a&quot;, &quot;a&quot;, &quot;rv&quot;, &quot;a&quot;, &quot;lv&quot;, &quot;a&quot;, &quot;a&quot;, &quot;…
+## $ weight              &lt;dbl&gt; 0.262, 0.680, 0.243, 0.153, 1.514, 0.227, 0.200, …
 ## $ influence           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
-## $ approve             &lt;dbl&gt; 46.0, 45.0, 42.1, 45.0, 36.0, 42.3, 57.0, 46.0, 4…
-## $ disapprove          &lt;dbl&gt; 37.0, 45.0, 45.2, 46.0, 44.0, 45.8, 43.0, 45.0, 4…
-## $ adjusted_approve    &lt;dbl&gt; 45.3, 45.8, 43.2, 45.8, 37.6, 43.4, 51.6, 46.8, 4…
-## $ adjusted_disapprove &lt;dbl&gt; 38.3, 43.6, 43.8, 44.6, 42.7, 44.4, 44.4, 43.6, 4…
+## $ approve             &lt;dbl&gt; 45.0, 46.0, 45.0, 42.1, 36.0, 46.0, 57.0, 42.3, 4…
+## $ disapprove          &lt;dbl&gt; 45.0, 37.0, 46.0, 45.2, 44.0, 45.0, 43.0, 45.8, 4…
+## $ adjusted_approve    &lt;dbl&gt; 45.8, 45.3, 45.8, 43.2, 37.6, 46.8, 51.6, 43.4, 4…
+## $ adjusted_disapprove &lt;dbl&gt; 43.6, 38.3, 44.6, 43.8, 42.7, 43.6, 44.4, 44.4, 4…
 ## $ multiversions       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-## $ tracking            &lt;lgl&gt; NA, TRUE, TRUE, TRUE, NA, TRUE, TRUE, TRUE, TRUE,…
-## $ url                 &lt;chr&gt; &quot;http://static.politico.com/9b/13/82a3baf542ae901…
-## $ poll_id             &lt;dbl&gt; 49249, 49253, 49426, 49262, 49260, 49425, 49266, …
-## $ question_id         &lt;dbl&gt; 77261, 77265, 77599, 77274, 77272, 77598, 77278, …
-## $ createddate         &lt;chr&gt; &quot;1/23/2017&quot;, &quot;1/23/2017&quot;, &quot;3/1/2017&quot;, &quot;1/24/2017&quot;…
-## $ timestamp           &lt;chr&gt; &quot;16:21:14 14 Sep 2020&quot;, &quot;16:21:14 14 Sep 2020&quot;, &quot;…</code></pre>
+## $ tracking            &lt;lgl&gt; TRUE, NA, TRUE, TRUE, NA, TRUE, TRUE, TRUE, TRUE,…
+## $ url                 &lt;chr&gt; &quot;http://www.gallup.com/poll/201617/gallup-daily-t…
+## $ poll_id             &lt;dbl&gt; 49253, 49249, 49262, 49426, 49260, 49236, 49266, …
+## $ question_id         &lt;dbl&gt; 77265, 77261, 77274, 77599, 77272, 77248, 77278, …
+## $ createddate         &lt;chr&gt; &quot;1/23/2017&quot;, &quot;1/23/2017&quot;, &quot;1/24/2017&quot;, &quot;3/1/2017&quot;…
+## $ timestamp           &lt;chr&gt; &quot;14:47:14 15 Sep 2020&quot;, &quot;14:47:14 15 Sep 2020&quot;, &quot;…</code></pre>
+<p>The dates in the dataset are in characters category so we have to fix them to dates:</p>
 <pre class="r"><code># Use `lubridate` to fix dates, as they are given as characters.
 approval_polllist$new_modeldate &lt;- as.Date(approval_polllist$modeldate,
                          format = &quot;%m/%d/%Y&quot;)
@@ -123,47 +121,45 @@ approval_polllist$new_createddate &lt;- as.Date(approval_polllist$createddate,
 approval_polllist$new_timestamp &lt;- as.POSIXct(approval_polllist$timestamp,
                           format = &quot;%H:%M:%S %d %b %Y&quot;)
 approval_polllist</code></pre>
-<pre><code>## # A tibble: 15,480 x 27
+<pre><code>## # A tibble: 15,487 x 27
 ##    president subgroup modeldate startdate enddate pollster grade samplesize
 ##    &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt;
-##  1 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Morning… B/C         1992
-##  2 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Gallup   B           1500
-##  3 Donald T… All pol… 9/14/2020 1/20/2017 1/24/2… Ipsos    B-          1632
-##  4 Donald T… All pol… 9/14/2020 1/21/2017 1/23/2… Gallup   B           1500
-##  5 Donald T… All pol… 9/14/2020 1/20/2017 1/25/2… Quinnip… B+          1190
-##  6 Donald T… All pol… 9/14/2020 1/21/2017 1/25/2… Ipsos    B-          1651
-##  7 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Rasmuss… C+          1500
-##  8 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Gallup   B           1500
-##  9 Donald T… All pol… 9/14/2020 1/23/2017 1/25/2… Gallup   B           1500
-## 10 Donald T… All pol… 9/14/2020 1/23/2017 1/25/2… Rasmuss… C+          1500
-## # … with 15,470 more rows, and 19 more variables: population &lt;chr&gt;,
+##  1 Donald T… All pol… 9/15/2020 1/20/2017 1/22/2… Gallup   B           1500
+##  2 Donald T… All pol… 9/15/2020 1/20/2017 1/22/2… Morning… B/C         1992
+##  3 Donald T… All pol… 9/15/2020 1/21/2017 1/23/2… Gallup   B           1500
+##  4 Donald T… All pol… 9/15/2020 1/20/2017 1/24/2… Ipsos    B-          1632
+##  5 Donald T… All pol… 9/15/2020 1/20/2017 1/25/2… Quinnip… B+          1190
+##  6 Donald T… All pol… 9/15/2020 1/22/2017 1/24/2… Gallup   B           1500
+##  7 Donald T… All pol… 9/15/2020 1/22/2017 1/24/2… Rasmuss… C+          1500
+##  8 Donald T… All pol… 9/15/2020 1/21/2017 1/25/2… Ipsos    B-          1651
+##  9 Donald T… All pol… 9/15/2020 1/23/2017 1/25/2… Gallup   B           1500
+## 10 Donald T… All pol… 9/15/2020 1/23/2017 1/25/2… Rasmuss… C+          1500
+## # … with 15,477 more rows, and 19 more variables: population &lt;chr&gt;,
 ## #   weight &lt;dbl&gt;, influence &lt;dbl&gt;, approve &lt;dbl&gt;, disapprove &lt;dbl&gt;,
 ## #   adjusted_approve &lt;dbl&gt;, adjusted_disapprove &lt;dbl&gt;, multiversions &lt;chr&gt;,
 ## #   tracking &lt;lgl&gt;, url &lt;chr&gt;, poll_id &lt;dbl&gt;, question_id &lt;dbl&gt;,
 ## #   createddate &lt;chr&gt;, timestamp &lt;chr&gt;, new_modeldate &lt;date&gt;,
 ## #   new_startdate &lt;date&gt;, new_enddate &lt;date&gt;, new_createddate &lt;date&gt;,
 ## #   new_timestamp &lt;dttm&gt;</code></pre>
-<div id="create-a-plot" class="section level2">
-<h2>Create a plot</h2>
-<p>What I would like you to do is to calculate the average net approval rate (approve- disapprove) for each week since he got into office. I want you plot the net approval, along with its 95% confidence interval. There are various dates given for each poll, please use <code>enddate</code>, i.e., the date the poll ended.</p>
+<p>we calculate the average net approval rate (approve- disapprove) for each week since he got into office.</p>
 <pre class="r"><code>#add week number of each enddate
 week_list &lt;- approval_polllist %&gt;%
 mutate(week = lubridate::week(ymd(approval_polllist$new_enddate)))
 week_list</code></pre>
-<pre><code>## # A tibble: 15,480 x 28
+<pre><code>## # A tibble: 15,487 x 28
 ##    president subgroup modeldate startdate enddate pollster grade samplesize
 ##    &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt;
-##  1 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Morning… B/C         1992
-##  2 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Gallup   B           1500
-##  3 Donald T… All pol… 9/14/2020 1/20/2017 1/24/2… Ipsos    B-          1632
-##  4 Donald T… All pol… 9/14/2020 1/21/2017 1/23/2… Gallup   B           1500
-##  5 Donald T… All pol… 9/14/2020 1/20/2017 1/25/2… Quinnip… B+          1190
-##  6 Donald T… All pol… 9/14/2020 1/21/2017 1/25/2… Ipsos    B-          1651
-##  7 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Rasmuss… C+          1500
-##  8 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Gallup   B           1500
-##  9 Donald T… All pol… 9/14/2020 1/23/2017 1/25/2… Gallup   B           1500
-## 10 Donald T… All pol… 9/14/2020 1/23/2017 1/25/2… Rasmuss… C+          1500
-## # … with 15,470 more rows, and 20 more variables: population &lt;chr&gt;,
+##  1 Donald T… All pol… 9/15/2020 1/20/2017 1/22/2… Gallup   B           1500
+##  2 Donald T… All pol… 9/15/2020 1/20/2017 1/22/2… Morning… B/C         1992
+##  3 Donald T… All pol… 9/15/2020 1/21/2017 1/23/2… Gallup   B           1500
+##  4 Donald T… All pol… 9/15/2020 1/20/2017 1/24/2… Ipsos    B-          1632
+##  5 Donald T… All pol… 9/15/2020 1/20/2017 1/25/2… Quinnip… B+          1190
+##  6 Donald T… All pol… 9/15/2020 1/22/2017 1/24/2… Gallup   B           1500
+##  7 Donald T… All pol… 9/15/2020 1/22/2017 1/24/2… Rasmuss… C+          1500
+##  8 Donald T… All pol… 9/15/2020 1/21/2017 1/25/2… Ipsos    B-          1651
+##  9 Donald T… All pol… 9/15/2020 1/23/2017 1/25/2… Gallup   B           1500
+## 10 Donald T… All pol… 9/15/2020 1/23/2017 1/25/2… Rasmuss… C+          1500
+## # … with 15,477 more rows, and 20 more variables: population &lt;chr&gt;,
 ## #   weight &lt;dbl&gt;, influence &lt;dbl&gt;, approve &lt;dbl&gt;, disapprove &lt;dbl&gt;,
 ## #   adjusted_approve &lt;dbl&gt;, adjusted_disapprove &lt;dbl&gt;, multiversions &lt;chr&gt;,
 ## #   tracking &lt;lgl&gt;, url &lt;chr&gt;, poll_id &lt;dbl&gt;, question_id &lt;dbl&gt;,
@@ -175,20 +171,20 @@ approval_year &lt;- week_list %&gt;%
   mutate(year=year(new_enddate),
          year_week=year(new_enddate)* 100 + week)
 approval_year</code></pre>
-<pre><code>## # A tibble: 15,480 x 30
+<pre><code>## # A tibble: 15,487 x 30
 ##    president subgroup modeldate startdate enddate pollster grade samplesize
 ##    &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt;
-##  1 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Morning… B/C         1992
-##  2 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Gallup   B           1500
-##  3 Donald T… All pol… 9/14/2020 1/20/2017 1/24/2… Ipsos    B-          1632
-##  4 Donald T… All pol… 9/14/2020 1/21/2017 1/23/2… Gallup   B           1500
-##  5 Donald T… All pol… 9/14/2020 1/20/2017 1/25/2… Quinnip… B+          1190
-##  6 Donald T… All pol… 9/14/2020 1/21/2017 1/25/2… Ipsos    B-          1651
-##  7 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Rasmuss… C+          1500
-##  8 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Gallup   B           1500
-##  9 Donald T… All pol… 9/14/2020 1/23/2017 1/25/2… Gallup   B           1500
-## 10 Donald T… All pol… 9/14/2020 1/23/2017 1/25/2… Rasmuss… C+          1500
-## # … with 15,470 more rows, and 22 more variables: population &lt;chr&gt;,
+##  1 Donald T… All pol… 9/15/2020 1/20/2017 1/22/2… Gallup   B           1500
+##  2 Donald T… All pol… 9/15/2020 1/20/2017 1/22/2… Morning… B/C         1992
+##  3 Donald T… All pol… 9/15/2020 1/21/2017 1/23/2… Gallup   B           1500
+##  4 Donald T… All pol… 9/15/2020 1/20/2017 1/24/2… Ipsos    B-          1632
+##  5 Donald T… All pol… 9/15/2020 1/20/2017 1/25/2… Quinnip… B+          1190
+##  6 Donald T… All pol… 9/15/2020 1/22/2017 1/24/2… Gallup   B           1500
+##  7 Donald T… All pol… 9/15/2020 1/22/2017 1/24/2… Rasmuss… C+          1500
+##  8 Donald T… All pol… 9/15/2020 1/21/2017 1/25/2… Ipsos    B-          1651
+##  9 Donald T… All pol… 9/15/2020 1/23/2017 1/25/2… Gallup   B           1500
+## 10 Donald T… All pol… 9/15/2020 1/23/2017 1/25/2… Rasmuss… C+          1500
+## # … with 15,477 more rows, and 22 more variables: population &lt;chr&gt;,
 ## #   weight &lt;dbl&gt;, influence &lt;dbl&gt;, approve &lt;dbl&gt;, disapprove &lt;dbl&gt;,
 ## #   adjusted_approve &lt;dbl&gt;, adjusted_disapprove &lt;dbl&gt;, multiversions &lt;chr&gt;,
 ## #   tracking &lt;lgl&gt;, url &lt;chr&gt;, poll_id &lt;dbl&gt;, question_id &lt;dbl&gt;,
@@ -207,21 +203,21 @@ week_mean &lt;- approval_year %&gt;%
             approval_low=approval_mean-margin_of_error,
             approval_high=approval_mean+margin_of_error)
 week_mean</code></pre>
-<pre><code>## # A tibble: 15,480 x 38
+<pre><code>## # A tibble: 15,487 x 38
 ## # Groups:   year_week [193]
 ##    president subgroup modeldate startdate enddate pollster grade samplesize
 ##    &lt;chr&gt;     &lt;chr&gt;    &lt;chr&gt;     &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt;
-##  1 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Morning… B/C         1992
-##  2 Donald T… All pol… 9/14/2020 1/20/2017 1/22/2… Gallup   B           1500
-##  3 Donald T… All pol… 9/14/2020 1/20/2017 1/24/2… Ipsos    B-          1632
-##  4 Donald T… All pol… 9/14/2020 1/21/2017 1/23/2… Gallup   B           1500
-##  5 Donald T… All pol… 9/14/2020 1/20/2017 1/25/2… Quinnip… B+          1190
-##  6 Donald T… All pol… 9/14/2020 1/21/2017 1/25/2… Ipsos    B-          1651
-##  7 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Rasmuss… C+          1500
-##  8 Donald T… All pol… 9/14/2020 1/22/2017 1/24/2… Gallup   B           1500
-##  9 Donald T… All pol… 9/14/2020 1/23/2017 1/25/2… Gallup   B           1500
-## 10 Donald T… All pol… 9/14/2020 1/23/2017 1/25/2… Rasmuss… C+          1500
-## # … with 15,470 more rows, and 30 more variables: population &lt;chr&gt;,
+##  1 Donald T… All pol… 9/15/2020 1/20/2017 1/22/2… Gallup   B           1500
+##  2 Donald T… All pol… 9/15/2020 1/20/2017 1/22/2… Morning… B/C         1992
+##  3 Donald T… All pol… 9/15/2020 1/21/2017 1/23/2… Gallup   B           1500
+##  4 Donald T… All pol… 9/15/2020 1/20/2017 1/24/2… Ipsos    B-          1632
+##  5 Donald T… All pol… 9/15/2020 1/20/2017 1/25/2… Quinnip… B+          1190
+##  6 Donald T… All pol… 9/15/2020 1/22/2017 1/24/2… Gallup   B           1500
+##  7 Donald T… All pol… 9/15/2020 1/22/2017 1/24/2… Rasmuss… C+          1500
+##  8 Donald T… All pol… 9/15/2020 1/21/2017 1/25/2… Ipsos    B-          1651
+##  9 Donald T… All pol… 9/15/2020 1/23/2017 1/25/2… Gallup   B           1500
+## 10 Donald T… All pol… 9/15/2020 1/23/2017 1/25/2… Rasmuss… C+          1500
+## # … with 15,477 more rows, and 30 more variables: population &lt;chr&gt;,
 ## #   weight &lt;dbl&gt;, influence &lt;dbl&gt;, approve &lt;dbl&gt;, disapprove &lt;dbl&gt;,
 ## #   adjusted_approve &lt;dbl&gt;, adjusted_disapprove &lt;dbl&gt;, multiversions &lt;chr&gt;,
 ## #   tracking &lt;lgl&gt;, url &lt;chr&gt;, poll_id &lt;dbl&gt;, question_id &lt;dbl&gt;,
@@ -239,7 +235,7 @@ final_plot &lt;- week_mean %&gt;%
          approval_high,
          approval_low )
 final_plot</code></pre>
-<pre><code>## # A tibble: 15,480 x 6
+<pre><code>## # A tibble: 15,487 x 6
 ## # Groups:   year_week [193]
 ##    year_week  year  week approval_mean approval_high approval_low
 ##        &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;
@@ -253,7 +249,8 @@ final_plot</code></pre>
 ##  8    201704  2017     4         0.943          3.01        -1.12
 ##  9    201704  2017     4         0.943          3.01        -1.12
 ## 10    201704  2017     4         0.943          3.01        -1.12
-## # … with 15,470 more rows</code></pre>
+## # … with 15,477 more rows</code></pre>
+<p>Then we plot the net approval, along with its 95% confidence interval. There are various dates given for each poll and we use the date the poll ended.</p>
 <pre class="r"><code>#plotting
 library(reshape2)
 #show_plot &lt;- melt(final_plot,id.vars = &quot;week&quot;)
@@ -277,9 +274,8 @@ ggplot(final_plot, aes(x = week, y = approval_mean, color = as.factor(year))) +
   #scale_x_continous(breaks=seq(-20,7.5,2.5)) +
   #scale_color_manual( values = c(&quot;blue&quot;,&quot;yellow&quot;,&quot;red&quot;,&quot;green&quot;))+
   NULL</code></pre>
-<p><img src="/Projects1/blog9_files/figure-html/unnamed-chunk-4-1.png" width="648" style="display: block; margin: auto;" /></p>
-<p>Compare the confidence intervals for <code>week 15</code> (6-12 April 2020) and <code>week 34</code> (17-23 August 2020). Can you explain what’s going on? One paragraph would be enough.</p>
-</div>
+<p><img src="/Projects1/blog9_files/figure-html/unnamed-chunk-5-1.png" width="2112" style="display: block; margin: auto;" /></p>
+<p>From the graphm compare the confidence intervals for <code>week 15</code> (6-12 April 2020) and <code>week 34</code> (17-23 August 2020), the difference shows people’s response on his Covid policy/reaction.</p>
 
                         </div>
                     </section>

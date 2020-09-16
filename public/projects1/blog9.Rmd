@@ -7,7 +7,7 @@ description: Vote for Trump?
 image: pic05.jpg
 keywords: ""
 slug: blog9
-title: Trump's Approval Margins
+title: Trump's Approval Margins Analysis
 ---
 
 
@@ -41,19 +41,19 @@ library(readxl)
 library(vroom)
 ```
 
-
-As we saw in class, fivethirtyeight.com has detailed data on [all polls that track the president's approval ](https://projects.fivethirtyeight.com/trump-approval-ratings)
+We got detailed data from fivethirtyeight.com [all polls that track the president's approval ](https://projects.fivethirtyeight.com/trump-approval-ratings) to analyse Trump's approval margins.
 
 ```{r, cache=TRUE}
-# Import approval polls data
-#approval_polllist <- read_csv(here::here('data', 'approval_polllist.csv'))
-
 # or directly off fivethirtyeight website
  approval_polllist <- read_csv('https://projects.fivethirtyeight.com/trump-approval-data/approval_polllist.csv') 
+```
 
+Let's have a look on the dataset first:
+```{r}
 glimpse(approval_polllist)
 ```
 
+The dates in the dataset are in characters category so we have to fix them to dates:
 ```{r}
 # Use `lubridate` to fix dates, as they are given as characters.
 approval_polllist$new_modeldate <- as.Date(approval_polllist$modeldate,
@@ -69,9 +69,7 @@ approval_polllist$new_timestamp <- as.POSIXct(approval_polllist$timestamp,
 approval_polllist
 ```
 
-## Create a plot
-
-What I would like you to do is to calculate the average net approval rate (approve- disapprove) for each week since he got into office. I want you plot the net approval, along with its 95% confidence interval. There are various dates given for each poll, please use `enddate`, i.e., the date the poll ended.
+we calculate the average net approval rate (approve- disapprove) for each week since he got into office. 
 ```{r}
 #add week number of each enddate
 week_list <- approval_polllist %>%
@@ -107,7 +105,8 @@ final_plot <- week_mean %>%
 final_plot
 ```
 
-```{r}
+Then we plot the net approval, along with its 95% confidence interval. There are various dates given for each poll and we use the date the poll ended.
+```{r,fig.width= 22, fig.height= 12}
 #plotting
 library(reshape2)
 #show_plot <- melt(final_plot,id.vars = "week")
@@ -133,4 +132,4 @@ ggplot(final_plot, aes(x = week, y = approval_mean, color = as.factor(year))) +
   NULL
 ```
 
-Compare the confidence intervals for `week 15` (6-12 April 2020) and `week 34` (17-23 August 2020). Can you explain what's going on? One paragraph would be enough.
+From the graphm compare the confidence intervals for `week 15` (6-12 April 2020) and `week 34` (17-23 August 2020), the difference shows people's response on his Covid policy/reaction.
