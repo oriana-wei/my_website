@@ -66,7 +66,8 @@ approval_polllist$new_createddate <- as.Date(approval_polllist$createddate,
                          format = "%m/%d/%Y")
 approval_polllist$new_timestamp <- as.POSIXct(approval_polllist$timestamp,
                           format = "%H:%M:%S %d %b %Y")
-approval_polllist
+approval_polllist %>% 
+  print(n = 10)
 ```
 
 we calculate the average net approval rate (approve- disapprove) for each week since he got into office. 
@@ -74,13 +75,11 @@ we calculate the average net approval rate (approve- disapprove) for each week s
 #add week number of each enddate
 week_list <- approval_polllist %>%
 mutate(week = lubridate::week(ymd(approval_polllist$new_enddate)))
-week_list
 
 #add a column for year+week
 approval_year <- week_list %>% 
   mutate(year=year(new_enddate),
          year_week=year(new_enddate)* 100 + week)
-approval_year
 
 #calculate the average net approval rate and CI of each week 
 week_mean <- approval_year %>% 
@@ -93,7 +92,6 @@ week_mean <- approval_year %>%
             margin_of_error=t_critical*se_approval,
             approval_low=approval_mean-margin_of_error,
             approval_high=approval_mean+margin_of_error)
-week_mean
 
 #finalize the data set showing on the plot
 final_plot <- week_mean %>%
@@ -101,8 +99,9 @@ final_plot <- week_mean %>%
          week,
          approval_mean,
          approval_high,
-         approval_low )
-final_plot
+         approval_low ) %>% 
+  print(n =10)
+
 ```
 
 Then we plot the net approval, along with its 95% confidence interval. There are various dates given for each poll and we use the date the poll ended.

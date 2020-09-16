@@ -86,9 +86,8 @@ Using this new dataframe, we calculated the death rate separately of COVID patie
 death_icu <- filtered_data %>%  
   group_by(sex, age_group, icu_yn) %>% 
   summarise(death_rate= count(death_yn=="Yes")/(count(death_yn=="Yes")+count(death_yn=="No"))) %>% 
-  mutate(death_rate=death_rate*100)
-death_icu %>% kbl() %>% kable_styling()
-
+  mutate(death_rate=death_rate*100) %>% 
+  print(n = 5)
 ```
 
 ```{r}
@@ -96,8 +95,8 @@ death_icu %>% kbl() %>% kable_styling()
 death_medcond <- filtered_data %>%  
   group_by(sex, age_group, medcond_yn) %>% 
   summarise(death_rate= count(death_yn=="Yes")/(count(death_yn=="Yes")+count(death_yn=="No"))) %>% 
-  mutate(death_rate=death_rate*100)
-death_medcond %>% kbl() %>% kable_styling()
+  mutate(death_rate=death_rate*100) %>% 
+  print(n = 5)
 ```
 
 We generated some useful graphs based on the death rate results we found from the previous code

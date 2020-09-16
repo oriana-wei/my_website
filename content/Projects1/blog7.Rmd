@@ -72,13 +72,11 @@ actual_monthly_rentals <- bike %>%
   group_by(year, month) %>% 
   filter(year>= 2015) %>% 
   summarise(actual_per_month = mean(bikes_hired)) 
-actual_monthly_rentals %>% kbl() %>% kable_styling()
 
 expected_monthly_rentals <- bike %>%
   group_by(month) %>% 
   filter(year>= 2015) %>% 
   summarise(expected_per_month = mean(bikes_hired))
-expected_monthly_rentals %>% kbl() %>% kable_styling()
 
 jointed_df <- left_join(actual_monthly_rentals, expected_monthly_rentals, by = "month", copy = TRUE) %>% 
    mutate(excess_monthly_rentals = actual_per_month - expected_per_month,
@@ -87,7 +85,8 @@ jointed_df <- left_join(actual_monthly_rentals, expected_monthly_rentals, by = "
          down = ifelse(actual_per_month<expected_per_month, excess_monthly_rentals, 0),
          up_percent = ifelse(actual_per_month>expected_per_month, excess_rentals_pct_change, 0),
          down_percent = ifelse(actual_per_month<expected_per_month, excess_rentals_pct_change, 0)
-         )
+         ) %>% 
+  print(n =10)
 ```
 
 The first graph that we replicated shows the monthly changes in the number of TfL bike rentals for the period 2015-2020.
@@ -122,14 +121,12 @@ actual_per_week <- bike %>%
   group_by(year, week) %>% 
   filter(year>= 2015) %>% 
   summarise(actual_bikes_hired = median(bikes_hired)) 
-actual_per_week %>% kbl() %>% kable_styling()
 
 # Calculate the expected weekly rentals for each year
 expected_per_week <- bike %>% 
   group_by(week) %>% 
   filter(year>= 2015) %>%  
   summarise(expected_bikes_hired = median(bikes_hired)) 
-expected_per_week %>% kbl() %>% kable_styling()
 
 # Build-up the data frame to plot
 jointed <- left_join(actual_per_week, expected_per_week, by = "week", copy = TRUE)%>% 
@@ -139,7 +136,8 @@ jointed <- left_join(actual_per_week, expected_per_week, by = "week", copy = TRU
          down = ifelse(actual_bikes_hired<expected_bikes_hired, excess_rentals, 0),
          up_percent = ifelse(actual_bikes_hired>expected_bikes_hired, excess_rentals_pct_change, 0),
          down_percent = ifelse(actual_bikes_hired<expected_bikes_hired, excess_rentals_pct_change, 0)
-         )
+         ) %>% 
+  print(n = 10)
 
 ```
 

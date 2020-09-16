@@ -20,8 +20,8 @@ options(digits = 3)
 
 # default figure size
 knitr::opts_chunk$set(
-  fig.width=6.75, 
-  fig.height=6.75,
+  fig.width=8, 
+  fig.height=8,
   fig.align = "center"
 )
 ```
@@ -62,14 +62,13 @@ We've converted the dataframe from wide to 'long' format and defined variables m
 # convert df from wide to long, creating a "Month" and a "Delta" variable 
 tidyweather <- weather %>% 
   select(1:13) %>% 
-  pivot_longer(cols = 2:13, names_to = "month", values_to = "delta")
-tidyweather %>% 
-  kbl() %>% 
-  kable_styling()
+  pivot_longer(cols = 2:13, names_to = "month", values_to = "delta") %>% 
+  print(n = 10)
+
 ```
 
 Let us plot the data using a time-series scatter plot, and add a trendline. To do that, we first need to create a new variable called `date` in order to ensure that the `delta` values are plot chronologically.
-```{r scatter_plot,fig.width=22, fig.height= 20}
+```{r scatter_plot}
 tidyweather <- tidyweather %>%
   mutate(date = ymd(paste(as.character(Year), month, "1")),
          month = month(date),
@@ -91,7 +90,7 @@ ggplot(tidyweather, aes(x=date, y = delta, colour = date)) +
 ```
 
 On analysing the temperature difference through different months, we find that the effects of increasing temperature appear to be homogeneous throughout different months. 
-```{r facet_wrap,fig.width=22, fig.height= 20}
+```{r facet_wrap}
 ## add to the title/sub , can i thin the smoothing line? , make the theme prettier (no grey months)
 ggplot(tidyweather, aes(x=date, y = delta, colour = date))+
   geom_point()+
@@ -124,7 +123,7 @@ comparison <- tidyweather %>%
 
 Now that we have the `interval` variable, we can create a density plot to study the distribution of monthly deviations (`delta`), grouped by the different time periods we are interested in. Set `fill` to `interval` to group and colour the data by different time periods.
 
-```{r density_plot, eval=FALSE,fig.width=22, fig.height= 20}
+```{r density_plot, eval=FALSE}
 ## fix the colors 
 ggplot(comparison, aes(x=delta, fill=interval, colour = interval))+
   
@@ -147,7 +146,7 @@ ggplot(comparison, aes(x=delta, fill=interval, colour = interval))+
 ```
 
 So far, we have been working with monthly anomalies. However, we might be interested in average annual anomalies. We can do this by using `group_by()` and `summarise()`, followed by a scatter plot to display the result. 
-```{r averaging, eval=FALSE,fig.width=22, fig.height= 20}
+```{r averaging, eval=FALSE}
 
 #creating yearly averages
 average_annual_anomaly <- tidyweather %>% 
@@ -208,7 +207,7 @@ formula_ci %>% kbl() %>% kable_styling()
 ```
 
 Here comes our visulisation:
-```{r, calculate_CI_using_bootstrap, fig.length="100%",fig.width=22, fig.height= 20}
+```{r, calculate_CI_using_bootstrap, fig.length="100%"}
 
 # use the infer package to construct a 95% CI for delta
 library(infer)
