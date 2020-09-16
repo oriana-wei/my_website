@@ -8,7 +8,7 @@
 	<meta name="description" content="Come and meet Oriana and her R projects">
 	<meta name="author" content="Oriana Wei">
 	<meta name="generator" content="Hugo 0.74.3" />
-	<title>COVID-19 &middot; Portfolio Webste for Oriana Wei</title>
+	<title>COVID-19 Death Rate Analysis &middot; Portfolio Webste for Oriana Wei</title>
 	<!-- Stylesheets -->
 	
 	<link rel="stylesheet" href="/css/main.css"/>
@@ -71,7 +71,7 @@
                     <section id="one">
                         <div class="inner">
                             <header class="major">
-                                <h1>COVID-19</h1>
+                                <h1>COVID-19 Death Rate Analysis</h1>
                             </header>
                             
                                 <span class="image main"><img src="/img/Projects1/pic02.jpg" alt="" /></span>
@@ -81,15 +81,14 @@
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
 
-<div id="cdc-covid-19-public-use-data" class="section level1">
-<h1>CDC COVID-19 Public Use Data</h1>
-<p>Let us use <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf">CDC Covid-19 Case Surveillance Data</a> to plot some graphs.</p>
+<p>COVID-19 affects different people in different ways. Most infected people will develop mild to moderate illness and recover without hospitalization.</p>
+<p>We use <a href="https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf">CDC Covid-19 Case Surveillance Data</a> to extract some insights on COVID death rate.</p>
 <pre class="r"><code># URL link to CDC to download data
 url &lt;- &quot;https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD&quot;
 
 covid_data &lt;- vroom(url)%&gt;%
   clean_names()</code></pre>
-<p>Let’s skim the data to find out the variables, unique values and missing values:</p>
+<p>Let’s skim the data to find out the variables, unique values and missing values first:</p>
 <pre class="r"><code>skim(covid_data)</code></pre>
 <table style='width: auto;'
         class='table table-condensed'>
@@ -516,23 +515,18 @@ onset_dt
 </tr>
 </tbody>
 </table>
-<p>Here, we have pre- processed the data, removing all missing, unknown and NA values so that we are left with a clean dataframe. Using this new dataframe, we calculated the death rate separately of COVID patients based on whether they had some other medical conditions and whether they were admitted in the ICU:</p>
-<pre class="r"><code>library(dplyr)
-
-#Selecting required variables for our graphs
-
+<p>And then, we have pre- processed the data, removing all missing, unknown and NA values so that we are left with a clean dataframe.</p>
+<pre class="r"><code>#selecting required variables for our graphs
 covid_data &lt;- covid_data %&gt;% 
   select(age_group, sex, death_yn, icu_yn, medcond_yn)
 
 #filtering to remove unwanted values
-
 covid_data &lt;- drop_na(covid_data)
 
 filtered_data &lt;- covid_data %&gt;% 
-  filter(!icu_yn %in% c(&quot;Missing&quot;, &quot;Unknown&quot;) &amp; !death_yn %in% c(&quot;Missing&quot;, &quot;Unknown&quot;) &amp; !sex %in% c(&quot;Missing&quot;, &quot;Unknown&quot;, &quot;Other&quot;) &amp; !age_group %in% c(&quot;Unknown&quot;) &amp; !medcond_yn %in% c(&quot;Missing&quot;, &quot;Unknown&quot;))
-
-#calculating death rate for icu admits
-
+  filter(!icu_yn %in% c(&quot;Missing&quot;, &quot;Unknown&quot;) &amp; !death_yn %in% c(&quot;Missing&quot;, &quot;Unknown&quot;) &amp; !sex %in% c(&quot;Missing&quot;, &quot;Unknown&quot;, &quot;Other&quot;) &amp; !age_group %in% c(&quot;Unknown&quot;) &amp; !medcond_yn %in% c(&quot;Missing&quot;, &quot;Unknown&quot;))</code></pre>
+<p>Using this new dataframe, we calculated the death rate separately of COVID patients based on whether they had some other medical conditions and whether they were admitted in the ICU:</p>
+<pre class="r"><code>#calculating death rate for icu admits
 death_icu &lt;- filtered_data %&gt;%  
   group_by(sex, age_group, icu_yn) %&gt;% 
   summarise(death_rate= count(death_yn==&quot;Yes&quot;)/(count(death_yn==&quot;Yes&quot;)+count(death_yn==&quot;No&quot;))) %&gt;% 
@@ -1063,7 +1057,6 @@ Yes
 </tbody>
 </table>
 <pre class="r"><code>#calculating death rate for presence/absence co-morbidities
-
 death_medcond &lt;- filtered_data %&gt;%  
   group_by(sex, age_group, medcond_yn) %&gt;% 
   summarise(death_rate= count(death_yn==&quot;Yes&quot;)/(count(death_yn==&quot;Yes&quot;)+count(death_yn==&quot;No&quot;))) %&gt;% 
@@ -1593,13 +1586,11 @@ Yes
 </tr>
 </tbody>
 </table>
-<p>We generated some useful graphs based on the death rate results we found from the previous code-</p>
+<p>We generated some useful graphs based on the death rate results we found from the previous code</p>
 <ol style="list-style-type: decimal">
 <li>Graph showing death % rate by age group, sex, and whether the patient had co-morbidities or not:</li>
 </ol>
-<p>As expected, the rate of death among both males and females having additional medical conditions was considerably higher than those who did not. Apart from that, elder people falling in the 70+ age intervals are a lot more prone to facing major consequences like death due to COVID than younger age groups that seem to recover more often.</p>
 <pre class="r"><code># ordering and naming labels
-
 death_medcond$medcond_yn = factor(death_medcond$medcond_yn, levels=c(&#39;Yes&#39;,&#39;No&#39;))
 
 new_labels &lt;- list(&quot;Yes&quot;=&quot;With co-morbidities&quot;, &quot;No&quot;= &quot;Without co-morbidities&quot;)
@@ -1609,9 +1600,8 @@ medcond_labeller &lt;- function(variable,value){
 }
 
 #plotting graph
-
 p &lt;- ggplot(death_medcond, aes(x=death_rate, y=age_group))+
-  geom_bar(stat=&quot;Identity&quot;, fill=&quot;blue&quot;, alpha= 0.5)+
+  geom_bar(stat=&quot;Identity&quot;, fill = &quot;blue&quot;, alpha= 0.5)+
   facet_grid(medcond_yn ~ sex, labeller = labeller(medcond_yn=medcond_labeller))+
   theme_bw()+
   geom_text(aes(label=round(death_rate,1)), hjust = -0.2, size=2.5,position = position_dodge(width = 1))+
@@ -1619,11 +1609,11 @@ p &lt;- ggplot(death_medcond, aes(x=death_rate, y=age_group))+
   NULL
 
 p</code></pre>
-<p><img src="/blogs/blog6_files/figure-html/unnamed-chunk-4-1.png" width="1152" style="display: block; margin: auto;" /></p>
+<p><img src="/Projects1/blog6_files/figure-html/unnamed-chunk-6-1.png" width="1152" style="display: block; margin: auto;" />
+As expected, the rate of death among both males and females having additional medical conditions was considerably higher than those who did not. Apart from that, elder people falling in the 70+ age intervals are a lot more prone to facing major consequences like death due to COVID than younger age groups that seem to recover more often.</p>
 <ol start="2" style="list-style-type: decimal">
 <li>Graph showing death % rate by age group, sex, and whether the patient was admited to Intensive Care Unit (ICU) or not:</li>
 </ol>
-<p>It can be observed that admission to ICU indicates more chances of death, steeply increasing among people above 70 years of age.</p>
 <pre class="r"><code>#ordering and naming labels
 
 death_icu$icu_yn = factor(death_icu$icu_yn, levels=c(&#39;Yes&#39;,&#39;No&#39;))
@@ -1644,8 +1634,8 @@ p &lt;- ggplot(death_icu, aes(x=death_rate, y=age_group))+
   labs(subtitle =&quot;Covid % death rate by age, sex and whether the patient was admitted to the ICU&quot;, x=&quot;&quot;, y=&quot;&quot;, caption = &quot;Source: CDC&quot;) + 
   NULL
 p</code></pre>
-<p><img src="/blogs/blog6_files/figure-html/unnamed-chunk-5-1.png" width="1152" style="display: block; margin: auto;" /></p>
-</div>
+<p><img src="/Projects1/blog6_files/figure-html/unnamed-chunk-7-1.png" width="1152" style="display: block; margin: auto;" />
+It can be observed that admission to ICU indicates more chances of death, steeply increasing among people above 70 years of age.</p>
 
                         </div>
                     </section>

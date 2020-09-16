@@ -3,12 +3,12 @@ categories:
 - ""
 - ""
 date: "2020-09-05"
-description: CDC COVID-19 Public Use Data
+description: Visualising CDC COVID-19 Public Use Data in R
 draft: false
 image: pic02.jpg
 keywords: ""
 slug: blog6
-title: COVID-19
+title: COVID-19 Death Rate Analysis
 ---
 
 
@@ -41,12 +41,13 @@ library(httr)
 library(readxl)
 library(vroom)
 library(kableExtra)
+library(dplyr)
 ```
 
 
-# CDC COVID-19 Public Use Data
+COVID-19 affects different people in different ways. Most infected people will develop mild to moderate illness and recover without hospitalization.
 
-Let us use [CDC Covid-19 Case Surveillance Data](https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf) to plot some graphs.
+We use [CDC Covid-19 Case Surveillance Data](https://data.cdc.gov/Case-Surveillance/COVID-19-Case-Surveillance-Public-Use-Data/vbim-akqf) to extract some insights on COVID death rate.
 
 ```{r, cache=TRUE}
 
@@ -58,57 +59,53 @@ covid_data <- vroom(url)%>%
 
 ```
 
-Let's skim the data to find out the variables, unique values and missing values:
+Let's skim the data to find out the variables, unique values and missing values first:
 
 ```{r}
-
 skim(covid_data)
 ```
-Here, we have pre- processed the data, removing all missing, unknown and NA values so that we are left with a clean dataframe. Using this new dataframe, we calculated the death rate separately of COVID patients based on whether they had some other medical conditions and whether they were admitted in the ICU:
 
+And then, we have pre- processed the data, removing all missing, unknown and NA values so that we are left with a clean dataframe.
 ```{r}
 
-library(dplyr)
-
-#Selecting required variables for our graphs
-
+#selecting required variables for our graphs
 covid_data <- covid_data %>% 
   select(age_group, sex, death_yn, icu_yn, medcond_yn)
 
 #filtering to remove unwanted values
-
 covid_data <- drop_na(covid_data)
 
 filtered_data <- covid_data %>% 
   filter(!icu_yn %in% c("Missing", "Unknown") & !death_yn %in% c("Missing", "Unknown") & !sex %in% c("Missing", "Unknown", "Other") & !age_group %in% c("Unknown") & !medcond_yn %in% c("Missing", "Unknown"))
+```
+
+Using this new dataframe, we calculated the death rate separately of COVID patients based on whether they had some other medical conditions and whether they were admitted in the ICU:
+```{r}
 
 #calculating death rate for icu admits
-
 death_icu <- filtered_data %>%  
   group_by(sex, age_group, icu_yn) %>% 
   summarise(death_rate= count(death_yn=="Yes")/(count(death_yn=="Yes")+count(death_yn=="No"))) %>% 
   mutate(death_rate=death_rate*100)
 death_icu %>% kbl() %>% kable_styling()
 
-#calculating death rate for presence/absence co-morbidities
+```
 
+```{r}
+#calculating death rate for presence/absence co-morbidities
 death_medcond <- filtered_data %>%  
   group_by(sex, age_group, medcond_yn) %>% 
   summarise(death_rate= count(death_yn=="Yes")/(count(death_yn=="Yes")+count(death_yn=="No"))) %>% 
   mutate(death_rate=death_rate*100)
 death_medcond %>% kbl() %>% kable_styling()
-
 ```
-We generated some useful graphs based on the death rate results we found from the previous code-
+
+We generated some useful graphs based on the death rate results we found from the previous code
 
 1. Graph showing death % rate by age group, sex, and whether the patient had co-morbidities or not:
-
-As expected, the rate of death among both males and females having additional medical conditions was considerably higher than those who did not. Apart from that, elder people falling in the 70+ age intervals are a lot more prone to facing major consequences like death due to COVID than younger age groups that seem to recover more often.
-
 ```{r, fig.width=12}
 
 # ordering and naming labels
-
 death_medcond$medcond_yn = factor(death_medcond$medcond_yn, levels=c('Yes','No'))
 
 new_labels <- list("Yes"="With co-morbidities", "No"= "Without co-morbidities")
@@ -118,9 +115,8 @@ medcond_labeller <- function(variable,value){
 }
 
 #plotting graph
-
 p <- ggplot(death_medcond, aes(x=death_rate, y=age_group))+
-  geom_bar(stat="Identity", fill="blue", alpha= 0.5)+
+  geom_bar(stat="Identity", fill = "blue", alpha= 0.5)+
   facet_grid(medcond_yn ~ sex, labeller = labeller(medcond_yn=medcond_labeller))+
   theme_bw()+
   geom_text(aes(label=round(death_rate,1)), hjust = -0.2, size=2.5,position = position_dodge(width = 1))+
@@ -129,10 +125,10 @@ p <- ggplot(death_medcond, aes(x=death_rate, y=age_group))+
 
 p
 ```
+As expected, the rate of death among both males and females having additional medical conditions was considerably higher than those who did not. Apart from that, elder people falling in the 70+ age intervals are a lot more prone to facing major consequences like death due to COVID than younger age groups that seem to recover more often.
 
 2. Graph showing death % rate by age group, sex, and whether the patient was admited to Intensive Care Unit (ICU) or not:
 
-It can be observed that admission to ICU indicates more chances of death, steeply increasing among people above 70 years of age. 
 
 ```{r fig.width=12}
 
@@ -157,3 +153,4 @@ p <- ggplot(death_icu, aes(x=death_rate, y=age_group))+
   NULL
 p
 ```
+It can be observed that admission to ICU indicates more chances of death, steeply increasing among people above 70 years of age. 

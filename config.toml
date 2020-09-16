@@ -98,7 +98,7 @@ disqusShortname = ""
 
     [[params.tiles.showcase]]
       title = "COVID-19"
-      subtitle = "FCDC COVID-19 Public Use Data"
+      subtitle = "Visualising CDC COVID-19 Public Use Data in R"
       image = "pic02.jpg"
       url = "Projects1/blog6"
 

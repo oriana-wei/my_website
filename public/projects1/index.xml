@@ -53,13 +53,14 @@ url &amp;lt;- &amp;quot;https://data.london.gov.uk/download/number-bicycle-hires
     </item>
     
     <item>
-      <title>COVID-19</title>
+      <title>COVID-19 Death Rate Analysis</title>
       <link>/projects1/blog6/</link>
       <pubDate>Sat, 05 Sep 2020 00:00:00 +0000</pubDate>
       
       <guid>/projects1/blog6/</guid>
-      <description>CDC COVID-19 Public Use Data Let us use CDC Covid-19 Case Surveillance Data to plot some graphs.
-# URL link to CDC to download data url &amp;lt;- &amp;quot;https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD&amp;quot; covid_data &amp;lt;- vroom(url)%&amp;gt;% clean_names() Let’s skim the data to find out the variables, unique values and missing values:
+      <description>COVID-19 affects different people in different ways. Most infected people will develop mild to moderate illness and recover without hospitalization.
+We use CDC Covid-19 Case Surveillance Data to extract some insights on COVID death rate.
+# URL link to CDC to download data url &amp;lt;- &amp;quot;https://data.cdc.gov/api/views/vbim-akqf/rows.csv?accessType=DOWNLOAD&amp;quot; covid_data &amp;lt;- vroom(url)%&amp;gt;% clean_names() Let’s skim the data to find out the variables, unique values and missing values first:
 skim(covid_data)  Table 1: Data summary          Name  covid_data    Number of rows  3662325    Number of columns  11    _______________________     Column type frequency:     character  8    Date  3    ________________________     Group variables  None     Variable type: character</description>
     </item>
     
