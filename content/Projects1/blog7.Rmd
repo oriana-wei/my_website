@@ -8,9 +8,8 @@ draft: false
 image: pic03.jpg
 keywords: ""
 slug: blog7
-title: Bike Sharing
+title: Bike Sharing Rentals Analysis
 ---
-
 
 ```{r, setup, include=FALSE}
 knitr::opts_chunk$set(
@@ -43,12 +42,8 @@ library(vroom)
 library(kableExtra)
 ```
 
-
-
-We got the latest TfL data on how many bikes were hired every single day:
-
+We got the latest TfL data on how many bikes were hired every single day to analyse the rentals:
 ```{r, get_tfl_data, cache=TRUE}
-
 url <- "https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx"
 
 # Download TFL data to temporary file
@@ -68,17 +63,11 @@ bike <- bike0 %>%
           week = isoweek(day))
 ```
 
-
 When we look at May and Jun and compare 2020 with the previous years, we can clearly see the decrease in bike rentals for 2020. It is quite obvious that this is the effect of the COVID-19 situation and the subsequent lockdown which prevented people from going outdoors. 
-
-The first graph that we replicated shows the monthly changes in the number of TfL bike rentals for the period 2015-2020.
-
-Our code for the replicated graph:
 
 ```{r, fig.width=10, fig.height= 4}
 
 # Calculate variables that feed into the graph
-
 actual_monthly_rentals <- bike %>% 
   group_by(year, month) %>% 
   filter(year>= 2015) %>% 
@@ -99,7 +88,11 @@ jointed_df <- left_join(actual_monthly_rentals, expected_monthly_rentals, by = "
          up_percent = ifelse(actual_per_month>expected_per_month, excess_rentals_pct_change, 0),
          down_percent = ifelse(actual_per_month<expected_per_month, excess_rentals_pct_change, 0)
          )
+```
 
+The first graph that we replicated shows the monthly changes in the number of TfL bike rentals for the period 2015-2020.
+```{r,fig.width=22, fig.height= 8}
+#plot the graph
 plot_1 <- jointed_df %>% 
 ggplot()+
   geom_line(aes(x=month, y = actual_per_month, group=year))+
@@ -119,24 +112,11 @@ ggplot()+
   )+
   NULL
 plot_1
-
-
-
 ```
 
+We calculate the expected number of rentals per week or month between 2015-2019 to see how each week/month of 2020 compares to the expected rentals. 
 
-For both of these graphs, you have to calculate the expected number of rentals per week or month between 2015-2019 and then, see how each week/month of 2020 compares to the expected rentals. Think of the calculation `excess_rentals = actual_rentals - expected_rentals`. 
-
-Should you use the mean or the median to calculate your expected rentals? Why?
-
-In creating your plots, you may find these links useful:
-
-- https://ggplot2.tidyverse.org/reference/geom_ribbon.html
-- https://ggplot2.tidyverse.org/reference/geom_tile.html 
-- https://ggplot2.tidyverse.org/reference/geom_rug.html
-
-```{r, fig.width=11, fig.height= 4}
-
+```{r, fig.width=22, fig.height= 8}
 # Build up the observed weekly bike rentals
 actual_per_week <- bike %>% 
   group_by(year, week) %>% 
@@ -161,6 +141,10 @@ jointed <- left_join(actual_per_week, expected_per_week, by = "week", copy = TRU
          down_percent = ifelse(actual_bikes_hired<expected_bikes_hired, excess_rentals_pct_change, 0)
          )
 
+```
+
+And we plot the percentage changes:
+```{r,fig.width=22, fig.height= 8}
 # Plot the %changes
 plot_2 <- jointed %>% 
 ggplot(aes(x=week, y = excess_rentals_pct_change, group=year))+
@@ -186,4 +170,5 @@ plot_2
 
 ```
 
+We can see from the graph that the actual rentals are quite different from the expectations and also show some seasonality.
 

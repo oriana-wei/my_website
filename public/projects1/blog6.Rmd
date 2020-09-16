@@ -122,7 +122,6 @@ p <- ggplot(death_medcond, aes(x=death_rate, y=age_group))+
   geom_text(aes(label=round(death_rate,1)), hjust = -0.2, size=2.5,position = position_dodge(width = 1))+
   labs(subtitle ="Covid % death rate by age, sex and whether the patient has co-morbidites", x="", y="", caption = "Source: CDC") +
   NULL
-
 p
 ```
 As expected, the rate of death among both males and females having additional medical conditions was considerably higher than those who did not. Apart from that, elder people falling in the 70+ age intervals are a lot more prone to facing major consequences like death due to COVID than younger age groups that seem to recover more often.

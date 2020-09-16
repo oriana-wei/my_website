@@ -8,7 +8,7 @@
 	<meta name="description" content="Come and meet Oriana and her R projects">
 	<meta name="author" content="Oriana Wei">
 	<meta name="generator" content="Hugo 0.74.3" />
-	<title>Bike Sharing &middot; Portfolio Webste for Oriana Wei</title>
+	<title>Bike Sharing Rentals Analysis &middot; Portfolio Webste for Oriana Wei</title>
 	<!-- Stylesheets -->
 	
 	<link rel="stylesheet" href="/css/main.css"/>
@@ -71,7 +71,7 @@
                     <section id="one">
                         <div class="inner">
                             <header class="major">
-                                <h1>Bike Sharing</h1>
+                                <h1>Bike Sharing Rentals Analysis</h1>
                             </header>
                             
                                 <span class="image main"><img src="/img/Projects1/pic03.jpg" alt="" /></span>
@@ -81,17 +81,17 @@
 <link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
 
 
-<p>We got the latest TfL data on how many bikes were hired every single day:</p>
+<p>We got the latest TfL data on how many bikes were hired every single day to analyse the rentals:</p>
 <pre class="r"><code>url &lt;- &quot;https://data.london.gov.uk/download/number-bicycle-hires/ac29363e-e0cb-47cc-a97a-e216d900a6b0/tfl-daily-cycle-hires.xlsx&quot;
 
 # Download TFL data to temporary file
 httr::GET(url, write_disk(bike.temp &lt;- tempfile(fileext = &quot;.xlsx&quot;)))</code></pre>
-<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2020-08-26T09%3A19%3A21/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20200915%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20200915T072738Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=ab0a58ade6128c570357efb93270704c5a838d31404299aac6d2d39f988ecb08&amp;X-Amz-SignedHeaders=host]
-##   Date: 2020-09-15 07:27
+<pre><code>## Response [https://airdrive-secure.s3-eu-west-1.amazonaws.com/london/dataset/number-bicycle-hires/2020-08-26T09%3A19%3A21/tfl-daily-cycle-hires.xlsx?X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=AKIAJJDIMAIVZJDICKHA%2F20200916%2Feu-west-1%2Fs3%2Faws4_request&amp;X-Amz-Date=20200916T074228Z&amp;X-Amz-Expires=300&amp;X-Amz-Signature=11719254f02cadca7c5dc4cc514195a682d16b1c01cc392a27480a06a1101c81&amp;X-Amz-SignedHeaders=host]
+##   Date: 2020-09-16 07:46
 ##   Status: 200
 ##   Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
 ##   Size: 164 kB
-## &lt;ON DISK&gt;  /var/folders/sy/j0yjcqzn57n43076k22vm9040000gn/T//RtmpY0fnjD/filec15a77188828.xlsx</code></pre>
+## &lt;ON DISK&gt;  /var/folders/sy/j0yjcqzn57n43076k22vm9040000gn/T//Rtmpr3yRH3/filee1507e0435dd.xlsx</code></pre>
 <pre class="r"><code># Use read_excel to read it as dataframe
 bike0 &lt;- read_excel(bike.temp,
                    sheet = &quot;Data&quot;,
@@ -105,10 +105,7 @@ bike &lt;- bike0 %&gt;%
           month = lubridate::month(day, label = TRUE),
           week = isoweek(day))</code></pre>
 <p>When we look at May and Jun and compare 2020 with the previous years, we can clearly see the decrease in bike rentals for 2020. It is quite obvious that this is the effect of the COVID-19 situation and the subsequent lockdown which prevented people from going outdoors.</p>
-<p>The first graph that we replicated shows the monthly changes in the number of TfL bike rentals for the period 2015-2020.</p>
-<p>Our code for the replicated graph:</p>
 <pre class="r"><code># Calculate variables that feed into the graph
-
 actual_monthly_rentals &lt;- bike %&gt;% 
   group_by(year, month) %&gt;% 
   filter(year&gt;= 2015) %&gt;% 
@@ -990,8 +987,9 @@ Dec
          down = ifelse(actual_per_month&lt;expected_per_month, excess_monthly_rentals, 0),
          up_percent = ifelse(actual_per_month&gt;expected_per_month, excess_rentals_pct_change, 0),
          down_percent = ifelse(actual_per_month&lt;expected_per_month, excess_rentals_pct_change, 0)
-         )
-
+         )</code></pre>
+<p>The first graph that we replicated shows the monthly changes in the number of TfL bike rentals for the period 2015-2020.</p>
+<pre class="r"><code>#plot the graph
 plot_1 &lt;- jointed_df %&gt;% 
 ggplot()+
   geom_line(aes(x=month, y = actual_per_month, group=year))+
@@ -1011,15 +1009,8 @@ ggplot()+
   )+
   NULL
 plot_1</code></pre>
-<p><img src="/Projects1/blog7_files/figure-html/unnamed-chunk-1-1.png" width="960" style="display: block; margin: auto;" /></p>
-<p>For both of these graphs, you have to calculate the expected number of rentals per week or month between 2015-2019 and then, see how each week/month of 2020 compares to the expected rentals. Think of the calculation <code>excess_rentals = actual_rentals - expected_rentals</code>.</p>
-<p>Should you use the mean or the median to calculate your expected rentals? Why?</p>
-<p>In creating your plots, you may find these links useful:</p>
-<ul>
-<li><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html" class="uri">https://ggplot2.tidyverse.org/reference/geom_ribbon.html</a></li>
-<li><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html" class="uri">https://ggplot2.tidyverse.org/reference/geom_tile.html</a></li>
-<li><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="uri">https://ggplot2.tidyverse.org/reference/geom_rug.html</a></li>
-</ul>
+<p><img src="/Projects1/blog7_files/figure-html/unnamed-chunk-2-1.png" width="2112" style="display: block; margin: auto;" /></p>
+<p>We calculate the expected number of rentals per week or month between 2015-2019 to see how each week/month of 2020 compares to the expected rentals.</p>
 <pre class="r"><code># Build up the observed weekly bike rentals
 actual_per_week &lt;- bike %&gt;% 
   group_by(year, week) %&gt;% 
@@ -4718,9 +4709,9 @@ jointed &lt;- left_join(actual_per_week, expected_per_week, by = &quot;week&quot
          down = ifelse(actual_bikes_hired&lt;expected_bikes_hired, excess_rentals, 0),
          up_percent = ifelse(actual_bikes_hired&gt;expected_bikes_hired, excess_rentals_pct_change, 0),
          down_percent = ifelse(actual_bikes_hired&lt;expected_bikes_hired, excess_rentals_pct_change, 0)
-         )
-
-# Plot the %changes
+         )</code></pre>
+<p>And we plot the percentage changes:</p>
+<pre class="r"><code># Plot the %changes
 plot_2 &lt;- jointed %&gt;% 
 ggplot(aes(x=week, y = excess_rentals_pct_change, group=year))+
  # geom_rect(data=q2_q4, inherit.aes=F,
@@ -4742,7 +4733,8 @@ ggplot(aes(x=week, y = excess_rentals_pct_change, group=year))+
   )+
   NULL
 plot_2</code></pre>
-<p><img src="/Projects1/blog7_files/figure-html/unnamed-chunk-2-1.png" width="1056" style="display: block; margin: auto;" /></p>
+<p><img src="/Projects1/blog7_files/figure-html/unnamed-chunk-4-1.png" width="2112" style="display: block; margin: auto;" /></p>
+<p>We can see from the graph that the actual rentals are quite different from the expectations and also show some seasonality.</p>
 
                         </div>
                     </section>
