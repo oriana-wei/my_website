@@ -1,7 +1,7 @@
 ---
 date: "2017-10-31T22:27:21-05:00"
 draft: false
-image: pic22.jpg
+image: wjx.jpg
 slug: blogs
 title: My Blogs
 ---
