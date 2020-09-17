@@ -11,7 +11,7 @@ slug: blog8
 title: Beer Consuming Analysis
 ---
  
-```{r, setup}
+```{r, setup,include=FALSE}
 knitr::opts_chunk$set(
   message = FALSE,
   warning = FALSE,
